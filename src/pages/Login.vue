@@ -26,38 +26,35 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="max-w-md mx-auto my-8 p-6 bg-white rounded shadow">
-    <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
-    <form @submit.prevent="handleSubmit">
-      <div class="mb-4">
-        <label for="email" class="block text-gray-700 mb-1">Email</label>
-        <InputText
-          id="email"
-          v-model="email"
-          type="email"
-          placeholder="Enter your email"
-          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+  <div>
+    <Form
+      v-slot="$form"
+      :resolver="resolver"
+      :initialValues="initialValues"
+      @submit="onFormSubmit"
+      class="flex justify-center flex-col gap-4"
+    >
+      <div class="flex flex-col gap-1">
+        <InputText name="username" type="text" placeholder="Username" />
+        <Message
+          v-if="$form.username?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+          >{{ $form.username.error?.message }}</Message
+        >
       </div>
-      <div class="mb-4">
-        <label for="password" class="block text-gray-700 mb-1">Password</label>
-        <Password
-          id="password"
-          v-model="password"
-          feedback="false"
-          toggleMask
-          placeholder="Enter your password"
-          class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+      <div class="flex flex-col gap-1">
+        <InputText name="email" type="text" placeholder="Email" />
+        <Message
+          v-if="$form.email?.invalid"
+          severity="error"
+          size="small"
+          variant="simple"
+          >{{ $form.email.error?.message }}</Message
+        >
       </div>
-      <div v-if="error" class="mb-4 text-red-500">
-        {{ error }}
-      </div>
-      <Button
-        type="submit"
-        label="Login"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-      />
-    </form>
+      <Button type="submit" severity="secondary" label="Submit" />
+    </Form>
   </div>
 </template>
