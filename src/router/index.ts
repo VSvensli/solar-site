@@ -5,7 +5,7 @@ import {
 } from "vue-router";
 
 import Home from "@/pages/Home.vue";
-import UserProfile from "@/pages/UserProfile.vue";
+import UserProfile from "@/pages/UserDashboard.vue";
 import ProjectDetails from "@/pages/ProjectDetails.vue";
 import Login from "@/pages/Login.vue";
 

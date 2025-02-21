@@ -9,7 +9,7 @@ export type Project = {
   locationBiddingZone: string;
   installedCapacity: string;
   description: string;
-  purchasedCellPercentage: string;
+  numberOfCells: number;
   isCompleted: boolean;
   completedDate: Date;
 };
@@ -23,7 +23,7 @@ const mockProjects: Project[] = [
     locationBiddingZone: "DE",
     installedCapacity: "100 MW",
     description: "This is a project in Berlin",
-    purchasedCellPercentage: "100%",
+    numberOfCells: 1000,
     isCompleted: true,
     completedDate: new Date("2021-01-01"),
   },
@@ -35,7 +35,7 @@ const mockProjects: Project[] = [
     locationBiddingZone: "DE",
     installedCapacity: "200 MW",
     description: "This is a project in Hamburg",
-    purchasedCellPercentage: "50%",
+    numberOfCells: 30403,
     isCompleted: false,
     completedDate: new Date("2025-06-01"),
   },
@@ -47,7 +47,7 @@ const mockProjects: Project[] = [
     locationBiddingZone: "NO2",
     installedCapacity: "300 MW",
     description: "This is a project in Oslo",
-    purchasedCellPercentage: "75%",
+    numberOfCells: 2000,
     isCompleted: true,
     completedDate: new Date("2023-01-01"),
   },
@@ -59,7 +59,7 @@ const mockProjects: Project[] = [
     locationBiddingZone: "DE",
     installedCapacity: "400 MW",
     description: "This is a project in Frankfurt",
-    purchasedCellPercentage: "25%",
+    numberOfCells: 100,
     isCompleted: true,
     completedDate: new Date("2024-01-01"),
   },
@@ -71,7 +71,7 @@ const mockProjects: Project[] = [
     locationBiddingZone: "DE",
     installedCapacity: "500 MW",
     description: "This is a project in Cologne",
-    purchasedCellPercentage: "0%",
+    numberOfCells: 10,
     isCompleted: true,
     completedDate: new Date("2025-01-01"),
   },
@@ -109,6 +109,11 @@ export const useProjectStore = defineStore("project", () => {
     status.fetchProjects.value = "success";
     projects.value = [...mockProjects];
   }
+
+  function findProjectById(id: string) {
+    return projects.value.find((project) => project.id === id);
+  }
+
   async function fetchProject(id: string) {
     status.fetchProject.value = "loading";
     // const response = await fetch(`https://api.example.com/projects/${id}`);
@@ -121,6 +126,7 @@ export const useProjectStore = defineStore("project", () => {
     projects,
     status,
     currentProject,
+    findProjectById,
     fetchProjects,
     fetchProject,
   };

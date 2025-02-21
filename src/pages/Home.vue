@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { useProjectStore } from "../stores/projectStore";
-import { onMounted } from "vue";
 import ProjectCard from "../components/ProjectCard.vue";
 
 const projectStore = useProjectStore();
-
-onMounted(() => {
-  projectStore.fetchProjects();
-});
 </script>
 
 <template>
