@@ -9,6 +9,7 @@ import UserDashboard from "@/pages/UserDashboard.vue";
 import ProjectDetails from "@/pages/ProjectDetails.vue";
 import Login from "@/pages/Login.vue";
 import Checkout from "@/pages/Checkout.vue";
+import CreateAccount from "@/pages/CreateAccount.vue";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", component: Home, name: "Home" },
@@ -31,6 +32,11 @@ const routes: RouteRecordRaw[] = [
     path: "/checkout",
     component: Checkout,
     name: "Checkout",
+  },
+  {
+    path: "/create-account",
+    component: CreateAccount,
+    name: "CreateAccount",
   },
 ];
 const router = createRouter({
