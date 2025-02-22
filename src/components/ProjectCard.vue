@@ -23,12 +23,22 @@ function goToProject(id: string) {
     </div>
     <p class="text-sm text-gray-500">{{ project.description }}</p>
     <div class="mt-2">
-      <p class="text-sm text-gray-500">Location: {{ project.locationCity }}, {{ project.locationCountry }}</p>
-      <p class="text-sm text-gray-500">Capacity: {{ project.installedCapacity }}</p>
-      <p class="text-sm text-gray-500">Completed: {{ project.completedDate }}</p>
+      <p class="text-sm text-gray-500">
+        Location: {{ project.locationCity }}, {{ project.locationCountry }}
+      </p>
+      <p class="text-sm text-gray-500">
+        Capacity: {{ project.installedCapacity }}
+      </p>
+      <p class="text-sm text-gray-500">
+        Completed: {{ project.completedDate }}
+      </p>
       <p class="text-sm text-gray-500">Cells: {{ project.numberOfCells }}</p>
       <p class="text-sm text-gray-500">Price: ${{ project.unitPrice }}/cell</p>
     </div>
-    <Button v-if="project.id" @click="goToProject(project.id)" label="View project" />
+    <Button
+      v-if="project.id"
+      @click="goToProject(project.id)"
+      label="View project"
+    />
   </div>
 </template>

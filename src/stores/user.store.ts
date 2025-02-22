@@ -52,7 +52,7 @@ export const useUserStore = defineStore("user", () => {
     fetchUserStatistics: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchProjectProfits: ref<"idle" | "loading" | "success" | "error">("idle"),
     postCellPurchaseRequest: ref<"idle" | "loading" | "success" | "error">(
-      "idle"
+      "idle",
     ),
   };
 

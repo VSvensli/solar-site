@@ -23,7 +23,7 @@ ChartJS.register(
   LinearScale,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 const props = defineProps<{ projectId: string | null }>();

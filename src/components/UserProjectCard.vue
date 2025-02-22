@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 
 const project = computed(() =>
-  projectStore.findProjectById(props.userProjectStatistics.projectId)
+  projectStore.findProjectById(props.userProjectStatistics.projectId),
 );
 </script>
 
