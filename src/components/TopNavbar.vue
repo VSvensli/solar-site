@@ -21,7 +21,7 @@ function handleLogout() {
 </script>
 
 <template>
-  <div class="bg-gray-800 text-white p-4 drop-shadow-sm">
+  <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
     <router-link to="/" class="text-white hover:text-gray-400">
       Home
     </router-link>

@@ -90,6 +90,8 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
+  const selectedCells = ref<Array<string>>([]);
+
   return {
     status,
     errorMsg,
@@ -100,5 +102,6 @@ export const useUserStore = defineStore("user", () => {
     userFunds,
     userPerformance,
     userProjects,
+    selectedCells,
   };
 });

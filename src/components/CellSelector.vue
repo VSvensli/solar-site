@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useProjectStore } from "@/stores/project.store";
+import { useUserStore } from "@/stores/user.store";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
 const projectStore = useProjectStore();
+const userStore = useUserStore();
 const { panelArray, status, errorMsg } = storeToRefs(projectStore);
 
 const props = defineProps<{ projectId: string }>();
@@ -29,7 +31,9 @@ onMounted(() => {
           class="m-4 w-20"
           :style="`background-color: ${cell.color}`"
         >
-          Cell {{ cell.id }}
+          <div @click="userStore.selectedCells.push(`${cell.id}`)">
+            {{ cell.id }}
+          </div>
         </div>
       </div>
     </div>
