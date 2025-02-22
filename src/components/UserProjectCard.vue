@@ -19,6 +19,7 @@ const project = computed(() =>
     Project name: {{ project.name }} Number of cells:{{
       userProjectStatistics.cellIds.length
     }}
-    Percentage of cells owned {{ userProjectStatistics.percentageOwned }}
+    Percentage of cells owned {{ userProjectStatistics.percentageOwned }} Time
+    of purchase: {{ userProjectStatistics.timeOfPurchase }}
   </div>
 </template>

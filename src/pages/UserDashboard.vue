@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import UserProjectCard from "@/components/UserProjectCard.vue";
-import UserAccountBalance from "@/components/UserAccountBalance.vue";
+import UserAccountBalance from "@/components/UserAccountStatistics.vue";
 import UserAccountPerformance from "@/components/UserAccountPerformance.vue";
 import { useUserStore } from "@/stores/user.store";
 const userProjectStore = useUserStore();

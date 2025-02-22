@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import {
-  type UserFunds,
+  type UserStatistics,
   type UserProject,
   type UserPerformaceDataPoint,
 } from "./user.types";
@@ -14,8 +14,14 @@ const mockUserPerformance: Array<UserPerformaceDataPoint> = [
   { timestamp: "2021-01-05", value: 1004 },
 ];
 
-const mockUserFunds: UserFunds = {
+const mockUserStatistics: UserStatistics = {
   accountBalance: 1000,
+  cellsOwned: 100,
+  projectsOwned: 5,
+  totalInvested: 10000,
+  totalEarnings: 1000,
+  totalEnergyGenerated: 10000,
+  maximumPowerGeneration: 1000,
 };
 
 const mockUserProjects: Array<UserProject> = [
@@ -23,16 +29,19 @@ const mockUserProjects: Array<UserProject> = [
     projectId: "1",
     cellIds: ["1", "2"],
     percentageOwned: 0.023,
+    timeOfPurchase: new Date(Date.parse("2024-12-17T03:24:00Z")),
   },
   {
     projectId: "2",
     cellIds: ["1", "2"],
     percentageOwned: 0.5,
+    timeOfPurchase: new Date("2024-12-17T03:24:00"),
   },
   {
     projectId: "3",
     cellIds: ["1", "2"],
     percentageOwned: 0.01,
+    timeOfPurchase: new Date("2024-12-17T03:24:00"),
   },
 ];
 
@@ -58,8 +67,15 @@ export const useUserStore = defineStore("user", () => {
     }
   };
 
-  const userFunds = ref<UserFunds>({ accountBalance: 0 });
-  const fetchUserFunds = async () => {
+  const userStatistics = ref<UserStatistics>({
+    accountBalance: 0,
+    cellsOwned: 0,
+    projectsOwned: 0,
+    totalInvested: 0,
+    totalPowerGenerated: 0,
+    totalEarnings: 0,
+  });
+  const fetchUserStatistics = async () => {
     status.value = "loading";
     errorMsg.value = null;
     try {
@@ -67,7 +83,7 @@ export const useUserStore = defineStore("user", () => {
       // if (!response.ok) throw new Error("Failed to fetch user funds");
 
       // const data: UserFunds = await response.json();
-      userFunds.value = mockUserFunds;
+      userStatistics.value = mockUserStatistics;
       status.value = "success";
     } catch (err) {
       errorMsg.value = (err as Error).message;
@@ -97,9 +113,9 @@ export const useUserStore = defineStore("user", () => {
     errorMsg,
     fetchUserProjects,
     fetchUserPerformance,
-    fetchUserFunds,
+    fetchUserStatistics,
     currentUserId,
-    userFunds,
+    userStatistics,
     userPerformance,
     userProjects,
     selectedCells,
