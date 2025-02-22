@@ -8,6 +8,7 @@ export const useAuthStore = defineStore("auth", () => {
   const userStore = useUserStore();
   const status = ref<"idle" | "loading" | "success" | "error">("idle");
   const errorMsg = ref<string | null>(null);
+  const isAuthenticated = ref<boolean>(false);
 
   const login = async (email: string, password: string) => {
     status.value = "loading";
@@ -18,6 +19,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       // const data = await response.json();
       userStore.currentUserId = mockId;
+      isAuthenticated.value = true;
       status.value = "success";
     } catch (err) {
       errorMsg.value = (err as Error).message;
@@ -34,6 +36,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       // const data = await response.json();
       userStore.currentUserId = null;
+      isAuthenticated.value = false;
       status.value = "success";
     } catch (err) {
       errorMsg.value = (err as Error).message;
@@ -44,6 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
   return {
     status,
     errorMsg,
+    isAuthenticated,
     login,
     logout,
   };
