@@ -15,19 +15,18 @@ onMounted(() => {
 <template>
   <div>
     <Card>
-      <template #title>Account Overview</template>
+      <template #title>Account balance</template>
       <template #content>
         <p class="m-0"></p>
         <p class="m-0">Available funds: {{ userStatistics.accountBalance }}</p>
         <p class="m-0">Total invested: {{ userStatistics.totalInvested }}</p>
         <p class="m-0">Total earned: {{ userStatistics.totalEarnings }}</p>
-        <p class="m-0">
-          Total energy generated: {{ userStatistics.totalEnergyGenerated }}
-        </p>
+        <p class="m-0">Total energy generated: {{ userStatistics.totalEnergyGenerated }}</p>
         <p class="m-0">
           Max power generation capacity:
           {{ userStatistics.maximumPowerGeneration }}
         </p>
+        <p class="m-0">Number of cells owned {{ userStatistics.cellsOwned }}</p>
         <p class="m-0">Number of cells owned {{ userStatistics.cellsOwned }}</p>
       </template>
     </Card>

@@ -13,12 +13,18 @@ onMounted(() => {
 
 <template>
   <div>
+    <div class="grid grid-cols-2 gap-5">
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <UserAccountPerformance />
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <UserAccountBalance />
+      </div>
+    </div>
     <UserProjectCard
       v-for="userProject in userProjectStore.userProjects"
       :key="userProject.projectId"
       :userProjectStatistics="userProject"
     />
-    <UserAccountBalance />
-    <UserAccountPerformance />
   </div>
 </template>

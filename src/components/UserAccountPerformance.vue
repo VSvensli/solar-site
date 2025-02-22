@@ -11,12 +11,32 @@ onMounted(() => {
   userStore.fetchUserPerformance();
 });
 
+const chartOptions = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  elements: {
+    line: {
+      tension: 0.4,
+    },
+  },
+  scales: {
+    y: {
+      ticks: {
+        callback: function (value: number, index: number, values: number[]) {
+          return "$ " + value;
+        },
+      },
+    },
+  },
+};
 const chartData = computed(() => {
   return {
     labels: userPerformance.value.map((item) => item.timestamp.toDateString()),
     datasets: [
       {
-        label: "Performance",
         data: userPerformance.value.map((item) => item.value),
         borderColor: "#3e95cd",
         fill: false,
@@ -27,7 +47,7 @@ const chartData = computed(() => {
 </script>
 
 <template>
-  <div class="card">
-    <Chart type="line" :data="chartData" class="h-[30rem]" />
+  <div>
+    <Chart type="line" :data="chartData" :options="chartOptions" class="h-[30rem]" />
   </div>
 </template>

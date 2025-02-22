@@ -4,11 +4,12 @@ import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
 import Chart from "primevue/chart";
+import { parseEnergyValueToString } from "@/utils";
 
 const props = defineProps<{ projectId: string | null }>();
 
 const peojectStore = useProjectStore();
-const { energyData, status, errorMsg } = storeToRefs(peojectStore);
+const { energyData } = storeToRefs(peojectStore);
 
 onMounted(() => {
   if (props.projectId) {
@@ -17,6 +18,23 @@ onMounted(() => {
     console.warn("Project ID is null. Skipping fetch.");
   }
 });
+
+const chartOptions = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  scales: {
+    y: {
+      ticks: {
+        callback: function (value: number, index: number, values: number[]) {
+          return parseEnergyValueToString(value);
+        },
+      },
+    },
+  },
+};
 
 const chartData = computed(() => ({
   labels: energyData.value.map((dp) => dp.timestamp.toDateString()), // X-axis labels
@@ -39,7 +57,7 @@ const chartData = computed(() => ({
       {{ errorMsg.fetchEnergyData.value }}
     </p> -->
     <div>
-      <Chart type="bar" :data="chartData" />
+      <Chart type="bar" :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>

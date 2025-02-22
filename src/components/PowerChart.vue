@@ -3,6 +3,7 @@
 import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
+import { parsePowerValueToString } from "@/utils";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,7 +22,7 @@ ChartJS.register(CategoryScale, LineElement, PointElement, LinearScale, Title, T
 const props = defineProps<{ projectId: string | null }>();
 
 const projectStore = useProjectStore();
-const { powerData, status, errorMsg } = storeToRefs(projectStore);
+const { powerData } = storeToRefs(projectStore);
 
 onMounted(() => {
   if (props.projectId) {
@@ -31,15 +32,37 @@ onMounted(() => {
   }
 });
 
+const chartOptions = {
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  elements: {
+    line: {
+      tension: 0.4,
+    },
+  },
+  // scales: {
+  //   y: {
+  //     ticks: {
+  //       callback: function (value: number, index: number, values: number[]) {
+  //         return parsePowerValueToString(value);
+  //       },
+  //     },
+  //   },
+  // },
+};
+
 // https://www.chartjs.org/docs/latest/samples/line/segments.html
 const chartData = computed(() => ({
-  labels: powerData.value.map((dp) => dp.timestamp.toDateString()), // X-axis labels
+  labels: powerData.value.map((dp) => dp.timestamp.toLocaleTimeString()), // X-axis labels
   datasets: [
     {
-      label: "Energy Production",
+      label: "Power Production",
       data: powerData.value.map((dp) => dp.production), // Y-axis values
       borderColor: "blue", // Default color for actual data
-      fill: false,
+      fill: true,
       segment: {
         borderDash: (ctx: ScriptableLineSegmentContext) => {
           const index = ctx.p1DataIndex; // Get the next data point
@@ -63,7 +86,7 @@ const chartData = computed(() => ({
       {{ errorMsg.fetchPowerData.value }}
     </p> -->
     <div>
-      <Line v-if="powerData.length" :data="chartData" />
+      <Line v-if="powerData.length" :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>

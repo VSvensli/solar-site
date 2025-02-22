@@ -1,11 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import {
-  type Project,
-  type EnergyDataPoint,
-  type PowerDataPoint,
-  type Panel,
-} from "./project.types";
+import { type Project, type EnergyDataPoint, type PowerDataPoint, type Panel } from "./project.types";
 
 const mockProjects: Project[] = [
   {
@@ -234,8 +229,7 @@ export const useProjectStore = defineStore("project", () => {
     // const response = await fetch(`https://api.example.com/projects/${id}`);
     // currentProject.value = await response.json();
     status.fetchProject.value = "success";
-    currentProject.value =
-      mockProjects.find((project) => project.id === projectId) || null;
+    currentProject.value = mockProjects.find((project) => project.id === projectId) || null;
   }
 
   const energyData = ref<Array<EnergyDataPoint>>([]);
