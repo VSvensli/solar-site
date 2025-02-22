@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { useProjectStore } from "../stores/projectStore";
+import { useProjectStore } from "../stores/project.store";
 import ProjectDescriptionCard from "../components/ProjectDescriptionCard.vue";
 import EnergyChart from "../components/EnergyChart.vue";
 import PowerChart from "../components/PowerChart.vue";

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useProjectStore } from "@/stores/projectStore";
+import { useProjectStore } from "@/stores/project.store";
 import { type UserProject } from "@/stores/user.types";
 
 const projectStore = useProjectStore();

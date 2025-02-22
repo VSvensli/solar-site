@@ -1,34 +1,23 @@
 <!-- components/EnergyChart.vue -->
 <script setup lang="ts">
 import { onMounted, computed } from "vue";
-import { useEnergyStore } from "@/stores/projectEnergyStore";
+import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
 import Chart from "primevue/chart";
 
 const props = defineProps<{ projectId: string | null }>();
 
-const energyStore = useEnergyStore();
-const { energyData, loading, error } = storeToRefs(energyStore);
+const peojectStore = useProjectStore();
+const { energyData, status, errorMsg } = storeToRefs(peojectStore);
 
 onMounted(() => {
   if (props.projectId) {
-    energyStore.fetchEnergyData(props.projectId);
+    peojectStore.fetchEnergyData(props.projectId);
   } else {
     console.warn("Project ID is null. Skipping fetch.");
   }
 });
 
-// Note: Not needed as EnergyChart is always destroyed/re-created when projectId changes (e.g., in a new page)
-// watch(
-//   () => props.projectId,
-//   (newProjectId) => {
-//     if (newProjectId) {
-//       energyStore.fetchEnergyData(newProjectId);
-//     }
-//   }
-// );
-
-// Prepare chart data
 const chartData = computed(() => ({
   labels: energyData.value.map((dp) => dp.timestamp), // X-axis labels
   datasets: [
@@ -45,8 +34,10 @@ const chartData = computed(() => ({
   <div class="bg-white p-4 rounded-lg shadow-md">
     <h2>Energy Production History</h2>
 
-    <p v-if="loading">Loading...</p>
-    <p v-if="error">{{ error }}</p>
+    <!-- <p v-if="status.fetchEnergyData.value === 'loading'">Loading...</p>
+    <p v-if="status.fetchEnergyData.value === 'error'">
+      {{ errorMsg.fetchEnergyData.value }}
+    </p> -->
     <div>
       <Chart type="bar" :data="chartData" />
     </div>

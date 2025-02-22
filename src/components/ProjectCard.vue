@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Project } from "@/stores/projectStore";
+import { type Project } from "@/stores/project.types";
 import { useRouter } from "vue-router";
 defineProps<{ project: Project }>();
 

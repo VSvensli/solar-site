@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { useCell } from "@/stores/cellStore";
+import { useProjectStore } from "@/stores/project.store";
 import { onMounted } from "vue";
 import { storeToRefs } from "pinia";
 
-const cellStore = useCell();
-const { panelArray, loading, error } = storeToRefs(cellStore);
+const projectStore = useProjectStore();
+const { panelArray, status, errorMsg } = storeToRefs(projectStore);
 
 const props = defineProps<{ projectId: string }>();
 
 onMounted(() => {
-  cellStore.fetchPanelArray(props.projectId);
+  projectStore.fetchPanelArray(props.projectId);
 });
 </script>
 
 <template>
   <div class="w-100 h-100 bg-amber-500">
     CellSelector
-    <div v-if="loading">Loading...</div>
-    <div v-if="error">{{ error }}</div>
     <div v-if="panelArray">
       <div
         v-for="panel in panelArray"

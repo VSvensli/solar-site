@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth.store";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import InputText from "primevue/inputtext";
@@ -18,7 +18,7 @@ async function handleSubmit() {
   error.value = "";
   try {
     await authStore.login(email.value, password.value);
-    router.push({ name: "UserProfile" });
+    router.push({ name: "UserDashboard" });
   } catch (err) {
     error.value = "Invalid email or password.";
     console.error("Login error:", err);

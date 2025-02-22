@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { type Project } from "@/stores/projectStore";
+import { type Project } from "@/stores/project.store";
 
-defineProps<{ project: Project | null }>();
+defineProps<{ project: Project }>();
 
 // Note: Is it correct to handle the null case here?
 </script>
