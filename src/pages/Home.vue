@@ -9,7 +9,7 @@ const projectStore = useProjectStore();
   <div>
     <h1 class="font-bold">Home Page</h1>
     <p>Here you can see all projects</p>
-    <div class="space-y-2">
+    <div class="space-y-2 border-2 border-gray-300 rounded-lg p-3">
       <ProjectCard
         v-for="project in projectStore.projects"
         :key="project.id"
@@ -20,7 +20,6 @@ const projectStore = useProjectStore();
           projectStore.projects.length === 0 &&
           projectStore.status.fetchProjects != 'loading'
         "
-        class="p-4"
       >
         <p>No projects</p>
       </div>

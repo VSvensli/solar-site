@@ -11,5 +11,7 @@ defineProps<{ project: Project }>();
     <h1 class="font-bold">Project description</h1>
     <h2>{{ project.name }}</h2>
     <p>{{ project.description }}</p>
+    <p>Everything:</p>
+    <p>{{ project }}</p>
   </div>
 </template>
