@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Project } from "@/stores/project.store";
+import { type Project } from "@/stores/project.types";
 
 defineProps<{ project: Project }>();
 
@@ -7,7 +7,7 @@ defineProps<{ project: Project }>();
 </script>
 
 <template>
-  <div v-if="project != null" class="p-4 border-1 shadow-lg rounded-lg">
+  <div v-if="project != null">
     <h1 class="font-bold">Project description</h1>
     <h2>{{ project.name }}</h2>
     <p>{{ project.description }}</p>

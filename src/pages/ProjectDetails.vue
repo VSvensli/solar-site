@@ -36,13 +36,22 @@ onMounted(async () => {
 
 <template>
   <div v-if="projectStore.currentProject">
-    {{ projectStore.currentProject }}
-    <ProjectDescriptionCard :project="projectStore.currentProject" />
-    <EnergyChart :projectId="projectStore.currentProject.id" />
-    <PowerChart :projectId="projectStore.currentProject.id" />
-    <CellSelector :projectId="projectStore.currentProject.id" />
+    <div class="bg-white p-4 mt-5 mb-4 border-1 shadow-md rounded-lg">
+      <ProjectDescriptionCard :project="projectStore.currentProject" />
+    </div>
+    <div class="grid grid-cols-2 gap-5">
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <EnergyChart :projectId="projectStore.currentProject.id" />
+      </div>
+      <div class="bg-white p-4 rounded-lg shadow-md">
+        <PowerChart :projectId="projectStore.currentProject.id" />
+      </div>
+    </div>
+    <div class="bg-white p-4 mt-4 rounded-lg shadow-md">
+      <CellSelector :projectId="projectStore.currentProject.id" />
+    </div>
     <Button
-      v-if="userStore.selectedCells.length == 0 || !authStore.isAuthenticated"
+      v-if="userStore.selectedCellIds.length == 0 || !authStore.isAuthenticated"
       disabled="true"
       label="Checkout"
     />

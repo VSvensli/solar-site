@@ -31,7 +31,7 @@ const chartData = computed(() => ({
 </script>
 
 <template>
-  <div class="bg-white p-4 rounded-lg shadow-md">
+  <div>
     <h2>Energy Production History</h2>
 
     <!-- <p v-if="status.fetchEnergyData.value === 'loading'">Loading...</p>
