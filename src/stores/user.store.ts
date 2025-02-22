@@ -51,6 +51,9 @@ export const useUserStore = defineStore("user", () => {
     fetchUserPerformance: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchUserStatistics: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchProjectProfits: ref<"idle" | "loading" | "success" | "error">("idle"),
+    postCellPurchaseRequest: ref<"idle" | "loading" | "success" | "error">(
+      "idle"
+    ),
   };
 
   const errorMsg = {
@@ -58,6 +61,7 @@ export const useUserStore = defineStore("user", () => {
     fetchUserProjects: ref<string | null>(null),
     fetchUserPerformance: ref<string | null>(null),
     fetchUserStatistics: ref<string | null>(null),
+    postCellPurchaseRequest: ref<string | null>(null),
   };
 
   const userProjects = ref<Array<UserProject>>([]);
@@ -120,8 +124,30 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
-  const userProjectProfits = ref<Array<number>>([0]);
-  const selectedCells = ref<Array<string>>([]);
+  async function postCellPurchaseRequest() {
+    fetch("https://your-backend-url.com/api/endpoint", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selectedCellIds.value),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(() => {
+        status.postCellPurchaseRequest.value = "success";
+      })
+      .catch((error) => {
+        status.postCellPurchaseRequest.value = "error";
+        errorMsg.postCellPurchaseRequest.value = error.message;
+      });
+  }
+
+  const selectedCellIds = ref<Array<string>>([]);
 
   return {
     status,
@@ -133,6 +159,7 @@ export const useUserStore = defineStore("user", () => {
     userStatistics,
     userPerformance,
     userProjects,
-    selectedCells,
+    selectedCellIds,
+    postCellPurchaseRequest,
   };
 });

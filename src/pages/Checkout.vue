@@ -3,17 +3,33 @@ import { useUserStore } from "@/stores/user.store";
 import { useProjectStore } from "@/stores/project.store";
 import { useRouter } from "vue-router";
 import Button from "primevue/button";
+import { useToast } from "primevue/usetoast";
 
+const toast = useToast();
 const userStore = useUserStore();
 const projectStore = useProjectStore();
 
 const router = useRouter();
 
-const processPayment = () => {
-  // Process payment here
-  // Redirect to the user dashboard after payment
-  router.push({ name: "UserDashboard" });
-};
+async function processPayment() {
+  await userStore.postCellPurchaseRequest();
+
+  if (userStore.status.fetchProjectProfits === "success") {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Failed to process payment",
+    });
+    router.push({ name: "UserDashboard" });
+  } else {
+    console.log("Failed to process payment");
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Failed to process payment",
+    });
+  }
+}
 </script>
 
 <template>
@@ -22,11 +38,11 @@ const processPayment = () => {
     <div>
       <h2>Selected Cells</h2>
       <ul>
-        <li v-for="cell in userStore.selectedCells" :key="cell">
+        <li v-for="cell in userStore.selectedCellIds" :key="cell">
           Cell {{ cell }}
         </li>
       </ul>
-      <Button @click="userStore.selectedCells = []" label="Clear Selection" />
+      <Button @click="userStore.selectedCellIds = []" label="Clear Selection" />
     </div>
     <div>
       <Button
