@@ -27,13 +27,14 @@ export type Cell = {
   id: string;
   ownerId: string;
   price: number;
-  cellRow: number;
-  cellColumns: number;
+  cellIndex: number;
   color: string;
 };
 
 export type Panel = {
   id: string;
   description: string;
+  cellRows: number;
+  cellColumns: number;
   cells: Cell[];
 };

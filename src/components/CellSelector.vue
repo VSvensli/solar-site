@@ -6,7 +6,7 @@ import { storeToRefs } from "pinia";
 
 const projectStore = useProjectStore();
 const userStore = useUserStore();
-const { panelArray, status, errorMsg } = storeToRefs(projectStore);
+const { panelArray } = storeToRefs(projectStore);
 
 const props = defineProps<{ projectId: string }>();
 
@@ -16,27 +16,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-100 h-100 bg-amber-500">
+  <div>
     CellSelector
-    <div v-if="panelArray">
-      <div
-        v-for="panel in panelArray"
-        :key="panel.id"
-        class="bg-gray-200 m-4 w-50"
-      >
-        Panel {{ panel.id }}
+    <div v-if="panelArray" class="flex flex-wrap gap-5">
+      <div v-for="panel in panelArray" :key="panel.id">
         <div
-          v-for="cell in panel.cells"
-          :key="cell.id"
-          class="m-4 w-20"
-          :style="`background-color: ${cell.color}`"
+          class="grid gap-1 p-2 bg-slate-500 shadow-sm rounded-md"
+          :style="{
+            gridTemplateColumns: 'repeat(' + panel.cellColumns + ', 50px)',
+            gridTemplateRows: 'repeat(' + panel.cellRows + ', 50px)',
+          }"
         >
-          <!-- Add check if cell id is allready in selected cells, if so pop that cell -->
-          <div @click="userStore.selectedCells.push(`${cell.id}`)">
+          <div
+            v-for="cell in panel.cells"
+            class="bg-blue-200 rounded-xl border-5 border-blue-100 border-opacity-50"
+            :key="cell.id"
+          >
             {{ cell.id }}
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="w-100 h-100 bg-blue-100">hello</div>
 </template>
