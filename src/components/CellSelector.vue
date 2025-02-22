@@ -31,6 +31,7 @@ onMounted(() => {
           class="m-4 w-20"
           :style="`background-color: ${cell.color}`"
         >
+          <!-- Add check if cell id is allready in selected cells, if so pop that cell -->
           <div @click="userStore.selectedCells.push(`${cell.id}`)">
             {{ cell.id }}
           </div>

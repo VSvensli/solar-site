@@ -7,6 +7,7 @@ export type Project = {
   installedCapacity: string;
   description: string;
   numberOfCells: number;
+  unitPrice: number;
   isCompleted: boolean;
   completedDate: Date;
 };

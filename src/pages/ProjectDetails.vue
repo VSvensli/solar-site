@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { useProjectStore } from "../stores/project.store";
 import { useUserStore } from "../stores/user.store";
+import { useAuthStore } from "../stores/auth.store";
 import ProjectDescriptionCard from "../components/ProjectDescriptionCard.vue";
 import EnergyChart from "../components/EnergyChart.vue";
 import PowerChart from "../components/PowerChart.vue";
@@ -12,6 +13,7 @@ import Button from "primevue/button";
 
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 const projectStore = useProjectStore();
 const userStore = useUserStore();
 
@@ -40,7 +42,7 @@ onMounted(async () => {
     <PowerChart :projectId="projectStore.currentProject.id" />
     <CellSelector :projectId="projectStore.currentProject.id" />
     <Button
-      v-if="userStore.selectedCells.length == 0"
+      v-if="userStore.selectedCells.length == 0 || !authStore.isAuthenticated"
       disabled="true"
       label="Checkout"
     />

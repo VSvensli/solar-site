@@ -8,6 +8,12 @@ const userStore = useUserStore();
 const projectStore = useProjectStore();
 
 const router = useRouter();
+
+const processPayment = () => {
+  // Process payment here
+  // Redirect to the user dashboard after payment
+  router.push({ name: "UserDashboard" });
+};
 </script>
 
 <template>
@@ -31,6 +37,13 @@ const router = useRouter();
           })
         "
         label="Back to Project"
+      />
+    </div>
+    <div>
+      <Button
+        @click="processPayment()"
+        label="Proceed to
+      Payment"
       />
     </div>
   </div>
