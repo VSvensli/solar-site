@@ -3,25 +3,7 @@
 import { onMounted, computed } from "vue";
 import { useEnergyStore } from "@/stores/projectEnergyStore";
 import { storeToRefs } from "pinia";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar } from "vue-chartjs";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import Chart from "primevue/chart";
 
 const props = defineProps<{ projectId: string | null }>();
 
@@ -66,14 +48,7 @@ const chartData = computed(() => ({
     <p v-if="loading">Loading...</p>
     <p v-if="error">{{ error }}</p>
     <div>
-      <Bar v-if="energyData.length" :data="chartData" />
+      <Chart type="bar" :data="chartData" />
     </div>
   </div>
 </template>
-
-<style scoped>
-.chart-container {
-  width: 100%;
-  height: 400px;
-}
-</style>
