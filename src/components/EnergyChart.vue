@@ -4,7 +4,7 @@ import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
 import Chart from "primevue/chart";
-import { parseEnergyValueToString } from "@/utils";
+import { formatEnergy } from "@/utils";
 
 const props = defineProps<{ projectId: string | null }>();
 
@@ -29,7 +29,7 @@ const chartOptions = {
     y: {
       ticks: {
         callback: function (value: number, index: number, values: number[]) {
-          return parseEnergyValueToString(value);
+          return formatEnergy(value);
         },
       },
     },

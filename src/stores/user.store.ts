@@ -25,7 +25,7 @@ const mockUserProjects: Array<UserProject> = [
     projectId: "1",
     cellIds: ["1", "2"],
     percentageOwned: 0.023,
-    timeOfPurchase: new Date(Date.parse("2024-12-17T03:24:00Z")),
+    timeOfPurchase: new Date(Date.parse("2025-02-17T03:24:00Z")),
   },
   {
     projectId: "2",

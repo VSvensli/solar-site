@@ -3,7 +3,7 @@
 import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
-import { parsePowerValueToString } from "@/utils";
+import { formatPower } from "@/utils";
 import {
   Chart as ChartJS,
   CategoryScale,
