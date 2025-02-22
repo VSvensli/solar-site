@@ -16,15 +16,7 @@ import {
 } from "chart.js";
 import { Line } from "vue-chartjs";
 
-ChartJS.register(
-  CategoryScale,
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-);
+ChartJS.register(CategoryScale, LineElement, PointElement, LinearScale, Title, Tooltip, Legend);
 
 const props = defineProps<{ projectId: string | null }>();
 
@@ -41,7 +33,7 @@ onMounted(() => {
 
 // https://www.chartjs.org/docs/latest/samples/line/segments.html
 const chartData = computed(() => ({
-  labels: powerData.value.map((dp) => dp.timestamp), // X-axis labels
+  labels: powerData.value.map((dp) => dp.timestamp.toDateString()), // X-axis labels
   datasets: [
     {
       label: "Energy Production",

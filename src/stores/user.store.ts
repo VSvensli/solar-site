@@ -1,17 +1,13 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import {
-  type UserStatistics,
-  type UserProject,
-  type UserPerformaceDataPoint,
-} from "./user.types";
+import { type UserStatistics, type UserProject, type UserPerformaceDataPoint } from "./user.types";
 
 const mockUserPerformance: Array<UserPerformaceDataPoint> = [
-  { timestamp: "2021-01-01", value: 1000 },
-  { timestamp: "2021-01-02", value: 1001 },
-  { timestamp: "2021-01-03", value: 1002 },
-  { timestamp: "2021-01-04", value: 1003 },
-  { timestamp: "2021-01-05", value: 1004 },
+  { timestamp: new Date("2021-01-01"), value: 1000 },
+  { timestamp: new Date("2021-01-02"), value: 1001 },
+  { timestamp: new Date("2021-01-03"), value: 1002 },
+  { timestamp: new Date("2021-01-04"), value: 1003 },
+  { timestamp: new Date("2021-01-05"), value: 1004 },
 ];
 
 const mockUserStatistics: UserStatistics = {
@@ -51,9 +47,7 @@ export const useUserStore = defineStore("user", () => {
     fetchUserPerformance: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchUserStatistics: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchProjectProfits: ref<"idle" | "loading" | "success" | "error">("idle"),
-    postCellPurchaseRequest: ref<"idle" | "loading" | "success" | "error">(
-      "idle",
-    ),
+    postCellPurchaseRequest: ref<"idle" | "loading" | "success" | "error">("idle"),
   };
 
   const errorMsg = {

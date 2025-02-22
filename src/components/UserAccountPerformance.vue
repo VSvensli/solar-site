@@ -13,7 +13,7 @@ onMounted(() => {
 
 const chartData = computed(() => {
   return {
-    labels: userPerformance.value.map((item) => item.timestamp),
+    labels: userPerformance.value.map((item) => item.timestamp.toDateString()),
     datasets: [
       {
         label: "Performance",

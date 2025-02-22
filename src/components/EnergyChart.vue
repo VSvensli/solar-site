@@ -19,7 +19,7 @@ onMounted(() => {
 });
 
 const chartData = computed(() => ({
-  labels: energyData.value.map((dp) => dp.timestamp), // X-axis labels
+  labels: energyData.value.map((dp) => dp.timestamp.toDateString()), // X-axis labels
   datasets: [
     {
       label: "Energy Production",

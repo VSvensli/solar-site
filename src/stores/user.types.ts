@@ -16,7 +16,7 @@ export type UserProject = {
 };
 
 export type UserPerformaceDataPoint = {
-  timestamp: string;
+  timestamp: Date;
   value: number;
 };
 
