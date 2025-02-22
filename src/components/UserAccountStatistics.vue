@@ -27,6 +27,8 @@ onMounted(() => {
       </p>
       <p class="m-0">Number of cells owned {{ userStatistics.cellsOwned }}</p>
     </div>
-    <Button label="Add funds" icon="pi-dollar" @click="userStore.fetchUserStatistics" />
+    <div v-tooltip="'Not implemented'">
+      <Button label="Add funds" disabled @click="userStore.fetchUserStatistics" />
+    </div>
   </div>
 </template>
