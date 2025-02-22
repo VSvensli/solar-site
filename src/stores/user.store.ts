@@ -46,24 +46,36 @@ const mockUserProjects: Array<UserProject> = [
 ];
 
 export const useUserStore = defineStore("user", () => {
-  const status = ref<"idle" | "loading" | "success" | "error">("idle");
-  const errorMsg = ref<string | null>(null);
-  const userProjects = ref<Array<UserProject>>([]);
+  const status = {
+    fetchUserProjects: ref<"idle" | "loading" | "success" | "error">("idle"),
+    fetchUserPerformance: ref<"idle" | "loading" | "success" | "error">("idle"),
+    fetchUserStatistics: ref<"idle" | "loading" | "success" | "error">("idle"),
+    fetchProjectProfits: ref<"idle" | "loading" | "success" | "error">("idle"),
+  };
 
+  const errorMsg = {
+    fetchProjectProfits: ref<string | null>(null),
+    fetchUserProjects: ref<string | null>(null),
+    fetchUserPerformance: ref<string | null>(null),
+    fetchUserStatistics: ref<string | null>(null),
+  };
+
+  const userProjects = ref<Array<UserProject>>([]);
   const currentUserId = ref<string | null>(null);
+
   const fetchUserProjects = async () => {
-    status.value = "loading";
-    errorMsg.value = null;
+    status.fetchUserProjects.value = "loading";
+    errorMsg.fetchUserProjects.value = null;
     try {
       // const response = await fetch(`/api/users/${userId}/projects`);
       // if (!response.ok) throw new Error("Failed to fetch user projects");
 
       // const data: UserProjects = await response.json();
       userProjects.value = mockUserProjects;
-      status.value = "success";
+      status.fetchUserProjects.value = "success";
     } catch (err) {
-      errorMsg.value = (err as Error).message;
-      status.value = "error";
+      errorMsg.fetchUserProjects.value = (err as Error).message;
+      status.fetchUserProjects.value = "error";
     }
   };
 
@@ -72,40 +84,43 @@ export const useUserStore = defineStore("user", () => {
     cellsOwned: 0,
     projectsOwned: 0,
     totalInvested: 0,
-    totalPowerGenerated: 0,
+    totalEnergyGenerated: 0,
     totalEarnings: 0,
+    maximumPowerGeneration: 0,
   });
+
   const fetchUserStatistics = async () => {
-    status.value = "loading";
-    errorMsg.value = null;
+    status.fetchUserStatistics.value = "loading";
+    errorMsg.fetchUserStatistics.value = null;
     try {
       // const response = await fetch(`/api/users/${userId}/funds`);
       // if (!response.ok) throw new Error("Failed to fetch user funds");
 
       // const data: UserFunds = await response.json();
       userStatistics.value = mockUserStatistics;
-      status.value = "success";
+      status.fetchUserStatistics.value = "success";
     } catch (err) {
-      errorMsg.value = (err as Error).message;
-      status.value = "error";
+      errorMsg.fetchUserStatistics.value = (err as Error).message;
+      status.fetchUserStatistics.value = "error";
     }
   };
 
   const userPerformance = ref<Array<UserPerformaceDataPoint>>([]);
-  const fetchUserPerformance = async () => {
-    status.value = "loading";
-    errorMsg.value = null;
+  async function fetchUserPerformance() {
+    status.fetchUserPerformance.value = "loading";
+    errorMsg.fetchUserPerformance.value = null;
     try {
       // const response = await fetch(`/api/users/${userId}/performance`);
       // if (!response.ok) throw new Error("Failed to fetch user performance");
       userPerformance.value = mockUserPerformance;
-      status.value = "success";
+      status.fetchUserPerformance.value = "success";
     } catch (err) {
-      errorMsg.value = (err as Error).message;
-      status.value = "error";
+      errorMsg.fetchUserPerformance.value = (err as Error).message;
+      status.fetchUserPerformance.value = "error";
     }
-  };
+  }
 
+  const userProjectProfits = ref<Array<number>>([0]);
   const selectedCells = ref<Array<string>>([]);
 
   return {

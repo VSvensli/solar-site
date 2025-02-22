@@ -189,6 +189,7 @@ export const useProjectStore = defineStore("project", () => {
     fetchEnergyData: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchPowerData: ref<"idle" | "loading" | "success" | "error">("idle"),
     fetchPanelArray: ref<"idle" | "loading" | "success" | "error">("idle"),
+    fetchEarnedSince: ref<"idle" | "loading" | "success" | "error">("idle"),
   };
   const errorMsg = {
     fetchProject: ref<string | null>(null),
@@ -196,6 +197,7 @@ export const useProjectStore = defineStore("project", () => {
     fetchEnergyData: ref<string | null>(null),
     fetchPowerData: ref<string | null>(null),
     fetchPanelArray: ref<string | null>(null),
+    fetchEarnedSince: ref<string | null>(null),
   };
   const projects = ref<Project[]>([]);
   const currentProject = ref<Project | null>(null);
@@ -221,7 +223,7 @@ export const useProjectStore = defineStore("project", () => {
     projects.value = [...mockProjects];
   }
 
-  function findProjectById(id: string) {
+  function findProjectById(id: string): Project | undefined {
     return projects.value.find((project) => project.id === id);
   }
 
@@ -280,8 +282,28 @@ export const useProjectStore = defineStore("project", () => {
     } catch (err) {
       errorMsg.fetchPanelArray.value = (err as Error).message;
       status.fetchPanelArray.value = "error";
-    } finally {
     }
+  }
+
+  type earnedRequest = {
+    Date: Date;
+    projectId: string;
+  };
+
+  async function fetchEarnedSince(request: earnedRequest) {
+    status.fetchEarnedSince.value = "loading";
+    errorMsg.fetchEarnedSince.value = null;
+    try {
+      // const response = await fetch(`/api/projects/${projectId}/profits`);
+      // if (!response.ok) throw new Error("Failed to fetch project profits");
+
+      // const data: userProjectProfits = await response.json();
+      status.fetchEarnedSince.value = "success";
+    } catch (err) {
+      errorMsg.fetchEarnedSince.value = (err as Error).message;
+      status.fetchEarnedSince.value = "error";
+    }
+    return 10;
   }
 
   return {
@@ -298,5 +320,6 @@ export const useProjectStore = defineStore("project", () => {
     findProjectById,
     fetchProjects,
     fetchProject,
+    fetchEarnedSince,
   };
 });

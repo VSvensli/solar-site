@@ -24,6 +24,6 @@ export type UserPerformaceDataPoint = {
 export type User = {
   id: string;
   email: string;
-  funds: UserFunds;
+  statistics: UserStatistics;
   projects: UserProject[];
 };
