@@ -14,21 +14,36 @@ function goToProject(id: string) {
 </script>
 
 <template>
-  <div class="p-4 border-b-2 border-gray-300">
-    <div>
-      <Tag v-if="project.isCompleted" severity="secondary" value="Completed" />
-      <Tag v-else severity="warn" value="Under construction" />
-
-      <h2 class="text-2xl/7 font-bold text-gray-900">{{ project.name }}</h2>
+  <div class="flex justify-between items-center gap-3">
+    <div class="w-full">
+      <div class="flex gap-3 pb-3">
+        <h2 class="text-2xl/7 font-bold text-gray-900">{{ project.name }}</h2>
+        <div class="text-xs">
+          <Tag v-if="project.isCompleted" severity="secondary" value="Completed" />
+          <Tag v-else severity="warn" value="Under construction" />
+        </div>
+      </div>
+      <div class="grid gap-1 text-sm text-gray-500 grid-style">
+        <p class="truncate">
+          Location: {{ project.locationCity }},
+          {{ project.locationCountry }}
+        </p>
+        <p>Capacity: {{ project.installedCapacity }}</p>
+        <p>Completed: {{ project.completedDate }}</p>
+        <p>Cells: {{ project.numberOfCells }}</p>
+        <p>Price: ${{ project.unitPrice }}/cell</p>
+      </div>
     </div>
-    <p class="text-sm text-gray-500">{{ project.description }}</p>
-    <div class="mt-2">
-      <p class="text-sm text-gray-500">Location: {{ project.locationCity }}, {{ project.locationCountry }}</p>
-      <p class="text-sm text-gray-500">Capacity: {{ project.installedCapacity }}</p>
-      <p class="text-sm text-gray-500">Completed: {{ project.completedDate }} <-- Convert this from string to Date</p>
-      <p class="text-sm text-gray-500">Cells: {{ project.numberOfCells }}</p>
-      <p class="text-sm text-gray-500">Price: ${{ project.unitPrice }}/cell</p>
+    <div class="mx-5">
+      <Button v-if="project.id" @click="goToProject(project.id)" label="View project" class="whitespace-nowrap" />
     </div>
-    <Button v-if="project.id" @click="goToProject(project.id)" label="View project" />
   </div>
 </template>
+
+<style scoped>
+.grid-style {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.3rem;
+}
+</style>
