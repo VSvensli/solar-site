@@ -1,15 +1,9 @@
 <script setup lang="ts">
-import { onMounted, computed } from "vue";
-import { storeToRefs } from "pinia";
+import { computed } from "vue";
 import { useUserStore } from "@/stores/user.store";
 import Chart from "primevue/chart";
 
 const userStore = useUserStore();
-const { userPerformance } = storeToRefs(userStore);
-
-onMounted(() => {
-  userStore.fetchUserPerformance();
-});
 
 const chartOptions = {
   plugins: {
@@ -34,10 +28,10 @@ const chartOptions = {
 };
 const chartData = computed(() => {
   return {
-    labels: userPerformance.value.map((item) => item.timestamp.toDateString()),
+    labels: userStore.userData.performance.map((item) => new Date(item.timestamp).toDateString()),
     datasets: [
       {
-        data: userPerformance.value.map((item) => item.value),
+        data: userStore.userData.performance.map((item) => item.value),
         borderColor: "#3e95cd",
         fill: false,
       },

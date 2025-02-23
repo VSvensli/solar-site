@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user.store";
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
+import { ref } from "vue";
 import { formatDollar, formatEnergy, formatPower } from "@/utils";
+import { type UserStatistics } from "@/stores/user.types";
 import Button from "primevue/button";
 
 const userStore = useUserStore();
-const { userStatistics } = storeToRefs(userStore);
-
-onMounted(() => {
-  userStore.fetchUserStatistics();
-});
+const userStatistics: UserStatistics = userStore.userData.statistics;
 </script>
 
 <template>
@@ -28,7 +24,7 @@ onMounted(() => {
       <p class="m-0">Number of cells owned {{ userStatistics.cellsOwned }}</p>
     </div>
     <div v-tooltip="'Not implemented'">
-      <Button label="Add funds" disabled @click="userStore.fetchUserStatistics" />
+      <Button label="Add funds" disabled />
     </div>
   </div>
 </template>

@@ -5,59 +5,48 @@ import { ref } from "vue";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";
+import { useToast } from "primevue/usetoast";
+import Toast from "primevue/toast";
 
+const toast = useToast();
+
+const show = () => {
+  toast.add({ severity: "error", summary: "Failed to login", detail: "Incorrect username or password", life: 3000 });
+};
 const authStore = useAuthStore();
 const router = useRouter();
 
 const username = ref("");
-const error = ref("");
 
 const handleLoginSubmit = async () => {
-  error.value = "";
-  try {
-    await authStore.userLogin("vegard", "password");
-    //router.push({ name: "UserDashboard" });
-  } catch (err) {
-    error.value = "Invalid email or password.";
-    console.error("Login error:", err);
-  }
-};
-
-const handleLoginSubmitTest = async () => {
-  error.value = "";
-  try {
-    await authStore.userLogin("unknown", "password");
-    //router.push({ name: "UserDashboard" });
-  } catch (err) {
-    error.value = "Invalid email or password.";
-    console.error("Login error:", err);
+  await authStore.userLogin(username.value, "password");
+  if (authStore.status.userLogin === "success") {
+    router.push({ name: "UserDashboard" });
+  } else {
+    show();
   }
 };
 </script>
 
 <template>
+  <Toast />
   <div>{{ authStore.isAuthenticated }}</div>
   <div>{{ authStore.userToken }}</div>
   <div>{{ authStore.status.userLogin }}</div>
-  <div>{{ authStore.errorMsg.userLogout }}</div>
+  <div>{{ authStore.errorMsg.userLogin }}</div>
   <div>Username: vegard</div>
   <Button @click="handleLoginSubmit" label="Login" />
 
-  <div>Username: unknown</div>
-  <Button @click="handleLoginSubmitTest" label="Login" />
-
-  <!-- <div class="flex justify-center items-center h-screen shadow">
+  <div class="flex justify-center items-center h-screen shadow">
     <div class="flex justify-center flex-col gap-4 shadow-md p-4 rounded-md">
       <h1 class="text-2xl font-bold">Login</h1>
-      <Form @submit="handleLoginSubmit">
-        <div class="flex flex-col gap-1">
-          <InputText v-model="username" name="username" type="text" placeholder="e-mail" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
-        </div>
-        <Button type="submit" severity="secondary" label="Submit" />
-      </Form>
+      <div class="flex flex-col gap-1">
+        <InputText v-model="username" name="username" type="text" placeholder="username" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
+      </div>
+      <Button @click="handleLoginSubmit" severity="secondary" label="Login" />
       <h3>Setup new account here:</h3>
       <h3 @click="router.push({ name: 'CreateAccount' })" class="cursor-pointer text-blue-500">Create Account</h3>
       <h6>
@@ -65,5 +54,5 @@ const handleLoginSubmitTest = async () => {
         password "password".
       </h6>
     </div>
-  </div> -->
+  </div>
 </template>

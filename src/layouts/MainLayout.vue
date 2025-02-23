@@ -7,7 +7,7 @@ import Toast from "primevue/toast";
 <template>
   <Toast />
   <TopNavbar />
-  <div class="container mx-auto p-4">
+  <div class="container-sm mx-10 p-4">
     <RouterView />
   </div>
 </template>
