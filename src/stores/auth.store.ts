@@ -10,7 +10,19 @@ export const useAuthStore = defineStore("auth", () => {
   const errorMsg = ref<string | null>(null);
   const isAuthenticated = ref<boolean>(false);
 
-  const login = async (email: string, password: string) => {
+  async function createUser(email: string, password: string) {
+    status.value = "loading";
+    errorMsg.value = null;
+    try {
+      // const response = await fetch("/api/register");
+      // if (!response.ok) throw new Error("Failed to register");
+    } catch (err) {
+      errorMsg.value = (err as Error).message;
+      status.value = "error";
+    }
+  }
+
+  async function userLogin(email: string, password: string) {
     status.value = "loading";
     errorMsg.value = null;
     try {
@@ -25,9 +37,9 @@ export const useAuthStore = defineStore("auth", () => {
       errorMsg.value = (err as Error).message;
       status.value = "error";
     }
-  };
+  }
 
-  const logout = async () => {
+  async function userLogout() {
     status.value = "loading";
     errorMsg.value = null;
     try {
@@ -42,13 +54,14 @@ export const useAuthStore = defineStore("auth", () => {
       errorMsg.value = (err as Error).message;
       status.value = "error";
     }
-  };
+  }
 
   return {
     status,
     errorMsg,
     isAuthenticated,
-    login,
-    logout,
+    userLogin,
+    userLogout,
+    createUser,
   };
 });

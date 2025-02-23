@@ -10,13 +10,12 @@ const authStore = useAuthStore();
 const router = useRouter();
 
 const email = ref("");
-const password = ref("");
 const error = ref("");
 
 async function handleSubmit() {
   error.value = "";
   try {
-    await authStore.login(email.value, password.value);
+    await authStore.userLogin(email.value, "password");
     router.push({ name: "UserDashboard" });
   } catch (err) {
     error.value = "Invalid email or password.";
@@ -31,33 +30,18 @@ async function handleSubmit() {
       <h1 class="text-2xl font-bold">Login</h1>
       <Form @submit="handleSubmit">
         <div class="flex flex-col gap-1">
-          <InputText
-            v-model="email"
-            name="email"
-            type="text"
-            placeholder="e-mail"
-          />
+          <InputText v-model="email" name="email" type="text" placeholder="e-mail" />
         </div>
         <div class="flex flex-col gap-1">
-          <Password
-            name="password"
-            placeholder="Password"
-            :feedback="false"
-            fluid
-          />
+          <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
         </div>
         <Button type="submit" severity="secondary" label="Submit" />
       </Form>
       <h3>Setup new account here:</h3>
-      <h3
-        @click="router.push({ name: 'CreateAccount' })"
-        class="cursor-pointer text-blue-500"
-      >
-        Create Account
-      </h3>
+      <h3 @click="router.push({ name: 'CreateAccount' })" class="cursor-pointer text-blue-500">Create Account</h3>
       <h6>
-        Note: There is currently no form of password handling, so only email is
-        needed to login
+        Note: There is currently no form of password handling, so only email/username is needed to login. All users have
+        password "password".
       </h6>
     </div>
   </div>

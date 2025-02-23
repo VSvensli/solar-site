@@ -15,30 +15,19 @@ function handleUserIconClick() {
   }
 }
 function handleLogout() {
-  authStore.logout();
+  authStore.userLogout();
   router.push({ name: "Home" });
 }
 </script>
 
 <template>
   <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
-    <router-link to="/" class="text-white hover:text-gray-400">
-      Home
-    </router-link>
+    <router-link to="/" class="text-white hover:text-gray-400"> Home </router-link>
 
-    <div
-      @click="handleUserIconClick"
-      class="text-white hover:text-gray-400 cursor-pointer hover:underline"
-    >
+    <div @click="handleUserIconClick" class="text-white hover:text-gray-400 cursor-pointer hover:underline">
       <span v-if="authStore.isAuthenticated">My Dashboard</span>
       <span v-else>Login/Signup</span>
     </div>
-    <button
-      v-if="authStore.isAuthenticated"
-      @click="handleLogout"
-      class="hover:underline"
-    >
-      Logout
-    </button>
+    <button v-if="authStore.isAuthenticated" @click="handleLogout" class="hover:underline">Logout</button>
   </div>
 </template>
