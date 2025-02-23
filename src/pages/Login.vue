@@ -30,13 +30,6 @@ const handleLoginSubmit = async () => {
 
 <template>
   <Toast />
-  <div>{{ authStore.isAuthenticated }}</div>
-  <div>{{ authStore.userToken }}</div>
-  <div>{{ authStore.status.userLogin }}</div>
-  <div>{{ authStore.errorMsg.userLogin }}</div>
-  <div>Username: vegard</div>
-  <Button @click="handleLoginSubmit" label="Login" />
-
   <div class="flex justify-center items-center h-screen shadow">
     <div class="flex justify-center flex-col gap-4 shadow-md p-4 rounded-md">
       <h1 class="text-2xl font-bold">Login</h1>
