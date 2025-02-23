@@ -4,10 +4,10 @@ import UserProjectCard from "@/components/UserProjectCard.vue";
 import UserAccountBalance from "@/components/UserAccountStatistics.vue";
 import UserAccountPerformance from "@/components/UserAccountPerformance.vue";
 import { useUserStore } from "@/stores/user.store";
-const userProjectStore = useUserStore();
+const userStore = useUserStore();
 
 onMounted(() => {
-  userProjectStore.fetchUserProjects();
+  userStore.fetchUserProjects();
 });
 </script>
 
@@ -23,7 +23,7 @@ onMounted(() => {
     </div>
     <div class="space-y-2 border-2 border-gray-300 rounded-lg p-3">
       <UserProjectCard
-        v-for="userProject in userProjectStore.userProjects"
+        v-for="userProject in userStore.userProjects"
         :key="userProject.projectId"
         :userProjectStatistics="userProject"
       />

@@ -9,28 +9,49 @@ import Button from "primevue/button";
 const authStore = useAuthStore();
 const router = useRouter();
 
-const email = ref("");
+const username = ref("");
 const error = ref("");
 
-async function handleSubmit() {
+const handleLoginSubmit = async () => {
   error.value = "";
   try {
-    await authStore.userLogin(email.value, "password");
-    router.push({ name: "UserDashboard" });
+    await authStore.userLogin("vegard", "password");
+    //router.push({ name: "UserDashboard" });
   } catch (err) {
     error.value = "Invalid email or password.";
     console.error("Login error:", err);
   }
-}
+};
+
+const handleLoginSubmitTest = async () => {
+  error.value = "";
+  try {
+    await authStore.userLogin("unknown", "password");
+    //router.push({ name: "UserDashboard" });
+  } catch (err) {
+    error.value = "Invalid email or password.";
+    console.error("Login error:", err);
+  }
+};
 </script>
 
 <template>
-  <div class="flex justify-center items-center h-screen shadow">
+  <div>{{ authStore.isAuthenticated }}</div>
+  <div>{{ authStore.userToken }}</div>
+  <div>{{ authStore.status.userLogin }}</div>
+  <div>{{ authStore.errorMsg.userLogout }}</div>
+  <div>Username: vegard</div>
+  <Button @click="handleLoginSubmit" label="Login" />
+
+  <div>Username: unknown</div>
+  <Button @click="handleLoginSubmitTest" label="Login" />
+
+  <!-- <div class="flex justify-center items-center h-screen shadow">
     <div class="flex justify-center flex-col gap-4 shadow-md p-4 rounded-md">
       <h1 class="text-2xl font-bold">Login</h1>
-      <Form @submit="handleSubmit">
+      <Form @submit="handleLoginSubmit">
         <div class="flex flex-col gap-1">
-          <InputText v-model="email" name="email" type="text" placeholder="e-mail" />
+          <InputText v-model="username" name="username" type="text" placeholder="e-mail" />
         </div>
         <div class="flex flex-col gap-1">
           <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
@@ -44,5 +65,5 @@ async function handleSubmit() {
         password "password".
       </h6>
     </div>
-  </div>
+  </div> -->
 </template>

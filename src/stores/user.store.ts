@@ -59,7 +59,6 @@ export const useUserStore = defineStore("user", () => {
   };
 
   const userProjects = ref<Array<UserProject>>([]);
-  const currentUserId = ref<string | null>(null);
 
   const fetchUserProjects = async () => {
     status.fetchUserProjects.value = "loading";
@@ -149,7 +148,6 @@ export const useUserStore = defineStore("user", () => {
     fetchUserProjects,
     fetchUserPerformance,
     fetchUserStatistics,
-    currentUserId,
     userStatistics,
     userPerformance,
     userProjects,
