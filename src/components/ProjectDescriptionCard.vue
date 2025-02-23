@@ -2,8 +2,6 @@
 import { type Project } from "@/stores/project.types";
 
 defineProps<{ project: Project }>();
-
-// Note: Is it correct to handle the null case here?
 </script>
 
 <template>
@@ -11,6 +9,7 @@ defineProps<{ project: Project }>();
     <h1 class="font-bold">Project description</h1>
     <h2>{{ project.name }}</h2>
     <p>{{ project.description }}</p>
+    <p>Created at: {{ project.completedDate.toDateString() }}</p>
     <p>Everything:</p>
     <p>{{ project }}</p>
   </div>

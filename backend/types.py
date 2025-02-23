@@ -59,7 +59,7 @@ class PowerDataPoint(BaseModel):
 class Cell(BaseModel):
     id: str
     ownerId: str
-    price: int
+    price: float
     cellIndex: int
     color: str
 

@@ -1,4 +1,4 @@
-from ..types import Project, EnergyDataPoint, PowerDataPoint
+from ..types import Project, EnergyDataPoint, PowerDataPoint, Panel, Cell
 from fastapi import APIRouter, HTTPException, status
 
 mock_db = {
@@ -125,6 +125,55 @@ mock_db = {
     ],
 }
 
+mock_db["panels"] = [
+    {
+        "id": "1",
+        "description": "Panel 1",
+        "cellRows": 5,
+        "cellColumns": 3,
+        "cells": [
+            {"id": "0", "ownerId": "1", "price": 0.5, "cellIndex": 0, "color": "blue"},
+            {"id": "1", "ownerId": "1", "price": 0.5, "cellIndex": 1, "color": "blue"},
+            {"id": "2", "ownerId": "1", "price": 0.5, "cellIndex": 2, "color": "blue"},
+            {"id": "3", "ownerId": "1", "price": 0.5, "cellIndex": 3, "color": "blue"},
+            {"id": "4", "ownerId": "1", "price": 0.5, "cellIndex": 4, "color": "blue"},
+            {"id": "5", "ownerId": "1", "price": 0.5, "cellIndex": 5, "color": "blue"},
+            {"id": "6", "ownerId": "1", "price": 0.5, "cellIndex": 6, "color": "blue"},
+            {"id": "7", "ownerId": "1", "price": 0.5, "cellIndex": 7, "color": "blue"},
+            {"id": "8", "ownerId": "1", "price": 0.5, "cellIndex": 8, "color": "blue"},
+            {"id": "9", "ownerId": "1", "price": 0.5, "cellIndex": 9, "color": "blue"},
+            {"id": "10", "ownerId": "1", "price": 0.5, "cellIndex": 10, "color": "blue"},
+            {"id": "11", "ownerId": "1", "price": 0.5, "cellIndex": 11, "color": "blue"},
+            {"id": "12", "ownerId": "1", "price": 0.5, "cellIndex": 12, "color": "blue"},
+            {"id": "13", "ownerId": "1", "price": 0.5, "cellIndex": 13, "color": "blue"},
+            {"id": "14", "ownerId": "1", "price": 0.5, "cellIndex": 14, "color": "blue"},
+        ],
+    },
+    {
+        "id": "2",
+        "description": "Panel 2",
+        "cellRows": 5,
+        "cellColumns": 3,
+        "cells": [
+            {"id": "16", "ownerId": "1", "price": 0.5, "cellIndex": 0, "color": "blue"},
+            {"id": "17", "ownerId": "1", "price": 0.5, "cellIndex": 1, "color": "blue"},
+            {"id": "18", "ownerId": "1", "price": 0.5, "cellIndex": 2, "color": "blue"},
+            {"id": "19", "ownerId": "1", "price": 0.5, "cellIndex": 3, "color": "blue"},
+            {"id": "20", "ownerId": "1", "price": 0.5, "cellIndex": 4, "color": "blue"},
+            {"id": "21", "ownerId": "1", "price": 0.5, "cellIndex": 5, "color": "blue"},
+            {"id": "22", "ownerId": "1", "price": 0.5, "cellIndex": 6, "color": "blue"},
+            {"id": "23", "ownerId": "1", "price": 0.5, "cellIndex": 7, "color": "blue"},
+            {"id": "24", "ownerId": "1", "price": 0.5, "cellIndex": 8, "color": "blue"},
+            {"id": "25", "ownerId": "1", "price": 0.5, "cellIndex": 9, "color": "blue"},
+            {"id": "26", "ownerId": "1", "price": 0.5, "cellIndex": 10, "color": "blue"},
+            {"id": "27", "ownerId": "1", "price": 0.5, "cellIndex": 11, "color": "blue"},
+            {"id": "28", "ownerId": "1", "price": 0.5, "cellIndex": 12, "color": "blue"},
+            {"id": "29", "ownerId": "1", "price": 0.5, "cellIndex": 13, "color": "blue"},
+            {"id": "30", "ownerId": "1", "price": 0.5, "cellIndex": 14, "color": "blue"},
+        ],
+    },
+]
+
 router = APIRouter()
 
 
@@ -164,3 +213,19 @@ async def get_power_data(project_id: str) -> list[PowerDataPoint]:
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail=f"Power history for project_id {project_id} not found."
     )
+
+
+@router.get("/projects/{project_id}/panels")
+async def get_panels(project_id: str) -> list[Panel]:
+    panels = mock_db.get("panels")
+    for panel in panels:
+        if panel.get("id") == project_id:
+            cells = [Cell(**cell) for cell in panel.get("cells")]
+            return Panel(
+                id=panel.get("id"),
+                description=panel.get("description"),
+                cellRows=panel.get("cellRows"),
+                cellColumns=panel.get("cellColumns"),
+                cells=cells,
+            )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Panels for project_id {project_id} not found.")

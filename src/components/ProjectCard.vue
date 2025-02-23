@@ -25,7 +25,7 @@ function goToProject(id: string) {
     <div class="mt-2">
       <p class="text-sm text-gray-500">Location: {{ project.locationCity }}, {{ project.locationCountry }}</p>
       <p class="text-sm text-gray-500">Capacity: {{ project.installedCapacity }}</p>
-      <p class="text-sm text-gray-500">Completed: {{ project.completedDate.toDateString() }}</p>
+      <p class="text-sm text-gray-500">Completed: {{ project.completedDate }} <-- Convert this from string to Date</p>
       <p class="text-sm text-gray-500">Cells: {{ project.numberOfCells }}</p>
       <p class="text-sm text-gray-500">Price: ${{ project.unitPrice }}/cell</p>
     </div>

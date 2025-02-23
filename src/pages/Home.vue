@@ -10,23 +10,11 @@ const projectStore = useProjectStore();
     <h1 class="font-bold">Home Page</h1>
     <p>Here you can see all projects</p>
     <div class="space-y-2 border-2 border-gray-300 rounded-lg p-3">
-      <ProjectCard
-        v-for="project in projectStore.projects"
-        :key="project.id"
-        :project="project"
-      />
-      <div
-        v-if="
-          projectStore.projects.length === 0 &&
-          projectStore.status.fetchProjects != 'loading'
-        "
-      >
+      <ProjectCard v-for="project in projectStore.projects" :key="project.id" :project="project" />
+      <div v-if="projectStore.projects.length === 0 && projectStore.status.fetchProjects != 'loading'">
         <p>No projects</p>
       </div>
-      <div
-        v-if="projectStore.status.fetchProjects === 'loading'"
-        class="loading"
-      >
+      <div v-if="projectStore.status.fetchProjects === 'loading'" class="loading">
         <p>Loading...</p>
       </div>
     </div>
@@ -34,7 +22,6 @@ const projectStore = useProjectStore();
 </template>
 
 <style scoped>
-/* Add cracy loading animation*/
 @keyframes loading {
   0% {
     background-color: #f3f3f3;

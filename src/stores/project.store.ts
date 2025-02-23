@@ -2,74 +2,6 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { type Project, type EnergyDataPoint, type PowerDataPoint, type Panel } from "./project.types";
 
-const mockProjects: Project[] = [
-  {
-    id: "1",
-    name: "Berlin Project",
-    locationCity: "Berlin",
-    locationCountry: "Germany",
-    locationBiddingZone: "DE",
-    installedCapacity: "100 MW",
-    description: "This is a project in Berlin",
-    numberOfCells: 1000,
-    unitPrice: 0.5,
-    isCompleted: true,
-    completedDate: new Date("2021-01-01"),
-  },
-  {
-    id: "2",
-    name: "Hamburg Project",
-    locationCity: "Hamburg",
-    locationCountry: "Germany",
-    locationBiddingZone: "DE",
-    installedCapacity: "200 MW",
-    description: "This is a project in Hamburg",
-    numberOfCells: 30403,
-    unitPrice: 0.2,
-    isCompleted: false,
-    completedDate: new Date("2025-06-01"),
-  },
-  {
-    id: "3",
-    name: "Oslo Project",
-    locationCity: "Oslo",
-    locationCountry: "Norway",
-    locationBiddingZone: "NO2",
-    installedCapacity: "300 MW",
-    description: "This is a project in Oslo",
-    numberOfCells: 2000,
-    unitPrice: 0.2,
-    isCompleted: true,
-    completedDate: new Date("2023-01-01"),
-  },
-  {
-    id: "4",
-    name: "Frankfurt Project",
-    locationCity: "Frankfurt",
-    locationCountry: "Germany",
-    locationBiddingZone: "DE",
-    installedCapacity: "400 MW",
-    description: "This is a project in Frankfurt",
-    numberOfCells: 100,
-    unitPrice: 0.5,
-    isCompleted: true,
-    completedDate: new Date("2024-01-01"),
-  },
-  {
-    id: "5",
-    name: "Cologne Project",
-    locationCity: "Cologne",
-    locationCountry: "Germany",
-    locationBiddingZone: "DE",
-    installedCapacity: "500 MW",
-    description: "This is a project in Cologne",
-    numberOfCells: 10,
-    unitPrice: 0.5,
-    isCompleted: true,
-    completedDate: new Date("2025-01-01"),
-  },
-];
-
 const mockEnergyDataResponse: Array<EnergyDataPoint> = [
   { timestamp: new Date("2025-02-21T08:00:00Z"), production: 150 },
   { timestamp: new Date("2025-02-21T09:00:00Z"), production: 175 },
@@ -201,23 +133,26 @@ export const useProjectStore = defineStore("project", () => {
 
   async function fetchProjects() {
     status.fetchProjects.value = "loading";
-    // projects.value = await fetch("https://api.example.com/projects")
-    //   .then((res) => {
-    //     if (!res.ok) {
-    //       throw new Error("Failed to fetch projects");
-    //     }
-    //     return res;
-    //   })
-    //   .then((res) => res.json())
-    //   .catch((error) => {
-    //     status.value = "error";
-    //     console.error(error);
-    //     return [];
-    //   });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    status.fetchProjects.value = "success";
-    projects.value = [...mockProjects];
+    fetch("http://127.0.0.1:8000/projects", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        projects.value = data;
+        status.fetchProjects.value = "success";
+      })
+      .catch((error) => {
+        status.fetchProjects.value = "error";
+        errorMsg.fetchProjects.value = error.message;
+      });
   }
 
   function findProjectById(id: string): Project | undefined {
@@ -225,45 +160,78 @@ export const useProjectStore = defineStore("project", () => {
   }
 
   async function fetchProject(projectId: string) {
-    status.fetchProject.value = "loading";
-    // const response = await fetch(`https://api.example.com/projects/${id}`);
-    // currentProject.value = await response.json();
-    status.fetchProject.value = "success";
-    currentProject.value = mockProjects.find((project) => project.id === projectId) || null;
+    status.fetchProjects.value = "loading";
+    const url = `http://127.0.0.1:8000/projects/${projectId}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        currentProject.value = { ...data, completedDate: new Date(data.completedDate) };
+        status.fetchProject.value = "success";
+      })
+      .catch((error) => {
+        status.fetchProject.value = "error";
+        errorMsg.fetchProject.value = error.message;
+      });
   }
-
   const energyData = ref<Array<EnergyDataPoint>>([]);
   async function fetchEnergyData(projectId: string) {
     status.fetchEnergyData.value = "loading";
-
-    try {
-      // const response = await fetch(`/api/projects/${projectId}/energy`);
-      // if (!response.ok) throw new Error("Failed to fetch energy data");
-
-      // const data: EnergyDataResponse = await response.json();
-      energyData.value = mockEnergyDataResponse;
-    } catch (err) {
-      errorMsg.fetchEnergyData.value = (err as Error).message;
-      status.fetchEnergyData.value = "error";
-    } finally {
-      status.fetchEnergyData.value = "success";
-    }
+    const url = `http://127.0.0.1:8000/projects/${projectId}/energy`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json() as Promise<Array<EnergyDataPoint>>;
+      })
+      .then((data) => {
+        energyData.value = data.map((point) => ({ ...point, timestamp: new Date(point.timestamp) }));
+        status.fetchEnergyData.value = "success";
+      })
+      .catch((error) => {
+        status.fetchEnergyData.value = "error";
+        errorMsg.fetchEnergyData.value = error.message;
+      });
   }
   const powerData = ref<Array<PowerDataPoint>>([]);
   async function fetchPowerData(projectId: string) {
     status.fetchPowerData.value = "loading";
-    try {
-      // const response = await fetch(`/api/projects/${projectId}/energy`);
-      // if (!response.ok) throw new Error("Failed to fetch energy data");
-
-      // const data: PowerDataResponse = await response.json();
-      powerData.value = mockPowerDataResponse;
-    } catch (err) {
-      errorMsg.fetchPowerData.value = (err as Error).message;
-      status.fetchPowerData.value = "error";
-    } finally {
-      status.fetchPowerData.value = "success";
-    }
+    const url = `http://127.0.0.1:8000/projects/${projectId}/power`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json() as Promise<Array<PowerDataPoint>>;
+      })
+      .then((data) => {
+        powerData.value = data.map((point) => ({ ...point, timestamp: new Date(point.timestamp) }));
+        status.fetchPowerData.value = "success";
+      })
+      .catch((error) => {
+        status.fetchPowerData.value = "error";
+        errorMsg.fetchPowerData.value = error.message;
+      });
   }
   const panelArray = ref<Array<Panel>>([]);
   async function fetchPanelArray(projectId: string) {
@@ -281,27 +249,6 @@ export const useProjectStore = defineStore("project", () => {
     }
   }
 
-  type earnedRequest = {
-    Date: Date;
-    projectId: string;
-  };
-
-  async function fetchEarnedSince(request: earnedRequest) {
-    status.fetchEarnedSince.value = "loading";
-    errorMsg.fetchEarnedSince.value = null;
-    try {
-      // const response = await fetch(`/api/projects/${projectId}/profits`);
-      // if (!response.ok) throw new Error("Failed to fetch project profits");
-
-      // const data: userProjectProfits = await response.json();
-      status.fetchEarnedSince.value = "success";
-    } catch (err) {
-      errorMsg.fetchEarnedSince.value = (err as Error).message;
-      status.fetchEarnedSince.value = "error";
-    }
-    return 10;
-  }
-
   return {
     projects,
     status,
@@ -316,6 +263,5 @@ export const useProjectStore = defineStore("project", () => {
     findProjectById,
     fetchProjects,
     fetchProject,
-    fetchEarnedSince,
   };
 });
