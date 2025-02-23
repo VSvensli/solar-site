@@ -172,6 +172,29 @@ mock_db["panels"] = [
             {"id": "30", "ownerId": "1", "price": 0.5, "cellIndex": 14, "color": "blue"},
         ],
     },
+    {
+        "id": "2",
+        "description": "Panel 3",
+        "cellRows": 5,
+        "cellColumns": 3,
+        "cells": [
+            {"id": "16", "ownerId": "1", "price": 0.5, "cellIndex": 0, "color": "blue"},
+            {"id": "17", "ownerId": "1", "price": 0.5, "cellIndex": 1, "color": "blue"},
+            {"id": "18", "ownerId": "1", "price": 0.5, "cellIndex": 2, "color": "blue"},
+            {"id": "19", "ownerId": "1", "price": 0.5, "cellIndex": 3, "color": "blue"},
+            {"id": "20", "ownerId": "1", "price": 0.5, "cellIndex": 4, "color": "blue"},
+            {"id": "21", "ownerId": "1", "price": 0.5, "cellIndex": 5, "color": "blue"},
+            {"id": "22", "ownerId": "1", "price": 0.5, "cellIndex": 6, "color": "blue"},
+            {"id": "23", "ownerId": "1", "price": 0.5, "cellIndex": 7, "color": "blue"},
+            {"id": "24", "ownerId": "1", "price": 0.5, "cellIndex": 8, "color": "blue"},
+            {"id": "25", "ownerId": "1", "price": 0.5, "cellIndex": 9, "color": "blue"},
+            {"id": "26", "ownerId": "1", "price": 0.5, "cellIndex": 10, "color": "blue"},
+            {"id": "27", "ownerId": "1", "price": 0.5, "cellIndex": 11, "color": "blue"},
+            {"id": "28", "ownerId": "1", "price": 0.5, "cellIndex": 12, "color": "blue"},
+            {"id": "29", "ownerId": "1", "price": 0.5, "cellIndex": 13, "color": "blue"},
+            {"id": "30", "ownerId": "1", "price": 0.5, "cellIndex": 14, "color": "blue"},
+        ],
+    },
 ]
 
 router = APIRouter()
@@ -218,14 +241,21 @@ async def get_power_data(project_id: str) -> list[PowerDataPoint]:
 @router.get("/projects/{project_id}/panels")
 async def get_panels(project_id: str) -> list[Panel]:
     panels = mock_db.get("panels")
+    resp = []
     for panel in panels:
         if panel.get("id") == project_id:
             cells = [Cell(**cell) for cell in panel.get("cells")]
-            return Panel(
-                id=panel.get("id"),
-                description=panel.get("description"),
-                cellRows=panel.get("cellRows"),
-                cellColumns=panel.get("cellColumns"),
-                cells=cells,
+            resp.append(
+                Panel(
+                    id=panel.get("id"),
+                    description=panel.get("description"),
+                    cellRows=panel.get("cellRows"),
+                    cellColumns=panel.get("cellColumns"),
+                    cells=cells,
+                )
             )
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Panels for project_id {project_id} not found.")
+    if not resp:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Panels for project_id {project_id} not found."
+        )
+    return resp

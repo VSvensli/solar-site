@@ -2,115 +2,6 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { type Project, type EnergyDataPoint, type PowerDataPoint, type Panel } from "./project.types";
 
-const mockEnergyDataResponse: Array<EnergyDataPoint> = [
-  { timestamp: new Date("2025-02-21T08:00:00Z"), production: 150 },
-  { timestamp: new Date("2025-02-21T09:00:00Z"), production: 175 },
-  { timestamp: new Date("2025-02-21T10:00:00Z"), production: 200 },
-  { timestamp: new Date("2025-02-21T11:00:00Z"), production: 180 },
-  { timestamp: new Date("2025-02-21T12:00:00Z"), production: 210 },
-];
-const mockPowerDataResponse: Array<PowerDataPoint> = [
-  {
-    timestamp: new Date("2025-02-21T08:00:00Z"),
-    production: 150,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T09:00:00Z"),
-    production: 175,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T10:00:00Z"),
-    production: 200,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T11:00:00Z"),
-    production: 180,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T12:00:00Z"),
-    production: 210,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T13:00:00Z"),
-    production: 300,
-    isPredicted: false,
-  },
-  {
-    timestamp: new Date("2025-02-21T14:00:00Z"),
-    production: 220,
-    isPredicted: true,
-  },
-  {
-    timestamp: new Date("2025-02-21T15:00:00Z"),
-    production: 200,
-    isPredicted: true,
-  },
-  {
-    timestamp: new Date("2025-02-21T16:00:00Z"),
-    production: 180,
-    isPredicted: true,
-  },
-  {
-    timestamp: new Date("2025-02-21T17:00:00Z"),
-    production: 100,
-    isPredicted: true,
-  },
-];
-
-const mockPanels: Array<Panel> = [
-  {
-    id: "1",
-    description: "Panel 1",
-    cellRows: 5,
-    cellColumns: 3,
-    cells: [
-      { id: "0", ownerId: "1", price: 0.5, cellIndex: 0, color: "blue" },
-      { id: "1", ownerId: "1", price: 0.5, cellIndex: 1, color: "blue" },
-      { id: "2", ownerId: "1", price: 0.5, cellIndex: 2, color: "blue" },
-      { id: "3", ownerId: "1", price: 0.5, cellIndex: 3, color: "blue" },
-      { id: "4", ownerId: "1", price: 0.5, cellIndex: 4, color: "blue" },
-      { id: "5", ownerId: "1", price: 0.5, cellIndex: 5, color: "blue" },
-      { id: "6", ownerId: "1", price: 0.5, cellIndex: 6, color: "blue" },
-      { id: "7", ownerId: "1", price: 0.5, cellIndex: 7, color: "blue" },
-      { id: "8", ownerId: "1", price: 0.5, cellIndex: 8, color: "blue" },
-      { id: "9", ownerId: "1", price: 0.5, cellIndex: 9, color: "blue" },
-      { id: "10", ownerId: "1", price: 0.5, cellIndex: 10, color: "blue" },
-      { id: "11", ownerId: "1", price: 0.5, cellIndex: 11, color: "blue" },
-      { id: "12", ownerId: "1", price: 0.5, cellIndex: 12, color: "blue" },
-      { id: "13", ownerId: "1", price: 0.5, cellIndex: 13, color: "blue" },
-      { id: "14", ownerId: "1", price: 0.5, cellIndex: 14, color: "blue" },
-    ],
-  },
-  {
-    id: "2",
-    description: "Panel 2",
-    cellRows: 5,
-    cellColumns: 3,
-    cells: [
-      { id: "16", ownerId: "1", price: 0.5, cellIndex: 0, color: "blue" },
-      { id: "17", ownerId: "1", price: 0.5, cellIndex: 1, color: "blue" },
-      { id: "18", ownerId: "1", price: 0.5, cellIndex: 2, color: "blue" },
-      { id: "19", ownerId: "1", price: 0.5, cellIndex: 3, color: "blue" },
-      { id: "20", ownerId: "1", price: 0.5, cellIndex: 4, color: "blue" },
-      { id: "21", ownerId: "1", price: 0.5, cellIndex: 5, color: "blue" },
-      { id: "22", ownerId: "1", price: 0.5, cellIndex: 6, color: "blue" },
-      { id: "23", ownerId: "1", price: 0.5, cellIndex: 7, color: "blue" },
-      { id: "24", ownerId: "1", price: 0.5, cellIndex: 8, color: "blue" },
-      { id: "25", ownerId: "1", price: 0.5, cellIndex: 9, color: "blue" },
-      { id: "26", ownerId: "1", price: 0.5, cellIndex: 10, color: "blue" },
-      { id: "27", ownerId: "1", price: 0.5, cellIndex: 11, color: "blue" },
-      { id: "28", ownerId: "1", price: 0.5, cellIndex: 12, color: "blue" },
-      { id: "29", ownerId: "1", price: 0.5, cellIndex: 13, color: "blue" },
-      { id: "30", ownerId: "1", price: 0.5, cellIndex: 14, color: "blue" },
-    ],
-  },
-];
-
 export const useProjectStore = defineStore("project", () => {
   const status = {
     fetchProjects: ref<"idle" | "loading" | "success" | "error">("idle"),
@@ -236,17 +127,27 @@ export const useProjectStore = defineStore("project", () => {
   const panelArray = ref<Array<Panel>>([]);
   async function fetchPanelArray(projectId: string) {
     status.fetchPanelArray.value = "loading";
-    try {
-      // const response = await fetch(`/api/projects/${projectId}/energy`);
-      // if (!response.ok) throw new Error("Failed to fetch energy data");
-
-      // const data: EnergyDataResponse = await response.json();
-      panelArray.value = mockPanels;
-      status.fetchPanelArray.value = "success";
-    } catch (err) {
-      errorMsg.fetchPanelArray.value = (err as Error).message;
-      status.fetchPanelArray.value = "error";
-    }
+    const url = `http://127.0.0.1:8000/projects/${projectId}/panels`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json() as Promise<Array<Panel>>;
+      })
+      .then((data) => {
+        panelArray.value = data.map((panel) => ({ ...panel }));
+        status.fetchPanelArray.value = "success";
+      })
+      .catch((error) => {
+        status.fetchPanelArray.value = "error";
+        errorMsg.fetchPanelArray.value = error.message;
+      });
   }
 
   return {
