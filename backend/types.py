@@ -1,34 +1,8 @@
 # This file contains dataclasses that are copied from the src/*.types.py files.
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@app.get("/projects")
-def read_projects():
-    return JSONResponse(content={"projects": []})
-
-
-@app.get("/projects/{project_id}")
-def read_project(project_id: str):
-    return JSONResponse(content={"project_id": project_id})
-
-
-@app.get("/projects/{project_id}/energy-data")
-def read_energy_data(project_id: str):
-    return JSONResponse(content={"project_id": project_id})
-
-
-@app.get("/projects/{project_id}/power-data")
-def read_power_data(project_id: str):
-    return JSONResponse(content={"project_id": project_id})
-
-
-@app.get("/projects/{project_id}/panels")
-def read_panels(project_id: str):
-    return JSONResponse(content={"project_id": project_id})
-
-
-@dataclass
-class UserStatistics:
+class UserStatistics(BaseModel):
     accountBalance: float
     cellsOwned: int
     projectsOwned: int
@@ -38,30 +12,26 @@ class UserStatistics:
     maximumPowerGeneration: float
 
 
-@dataclass
-class UserProject:
+class UserProject(BaseModel):
     projectId: str
     cellIds: list[str]
     percentageOwned: float
     timeOfPurchase: str
 
 
-@dataclass
-class UserPerformaceDataPoint:
+class UserPerformaceDataPoint(BaseModel):
     timestamp: str
     value: float
 
 
-@dataclass
-class User:
+class User(BaseModel):
     id: str
     email: str
     statistics: UserStatistics
     projects: list[UserProject]
 
 
-@dataclass
-class Project:
+class Project(BaseModel):
     id: str
     name: str
     locationCity: str
@@ -75,21 +45,18 @@ class Project:
     completedDate: str
 
 
-@dataclass
-class EnergyDataPoint:
+class EnergyDataPoint(BaseModel):
     timestamp: str
     production: int
 
 
-@dataclass
-class PowerDataPoint:
+class PowerDataPoint(BaseModel):
     timestamp: str
     production: int
     isPredicted: bool
 
 
-@dataclass
-class Cell:
+class Cell(BaseModel):
     id: str
     ownerId: str
     price: int
@@ -97,8 +64,7 @@ class Cell:
     color: str
 
 
-@dataclass
-class Panel:
+class Panel(BaseModel):
     id: str
     description: str
     cellRows: int

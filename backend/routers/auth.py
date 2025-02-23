@@ -1,37 +1,23 @@
 # Modified example from https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
-
 from datetime import datetime, timedelta, timezone
 
 from typing import Annotated
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
 
-
+from fastapi import APIRouter
 from pydantic import BaseModel
-
-import jwt
 from jwt.exceptions import InvalidTokenError
 
-SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5"
+import jwt
+
+SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5"  # Dummy secret key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-origins = [
-    "http://localhost",
-    "http://localhost:5173",
-]
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
+router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 fake_users_db = {
@@ -106,11 +92,10 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return encoded_jwt
 
 
-@app.post("/token")
+@router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    print(form_data.username, form_data.password)
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -120,7 +105,6 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
-    print("access_token:", access_token)
     return Token(access_token=access_token, token_type="bearer")
 
 
@@ -152,14 +136,14 @@ async def get_current_active_user(
     return current_user
 
 
-@app.get("/users/me")
+@router.get("/users/me")
 async def read_users_me(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
     return current_user
 
 
-@app.get("/users/me/items/")
+@router.get("/users/me/items/")
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
