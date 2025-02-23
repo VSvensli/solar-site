@@ -59,8 +59,9 @@ export const useAuthStore = defineStore("auth", () => {
       }),
     })
       .then((response) => {
-        if (!response.ok) {
-          isAuthenticated.value = false;
+        if (response.status === 401) {
+          throw new Error("Unauthorized");
+        } else if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         return response.json();
@@ -71,6 +72,7 @@ export const useAuthStore = defineStore("auth", () => {
         status.userLogin.value = "success";
       })
       .catch((error) => {
+        isAuthenticated.value = false;
         status.userLogin.value = "error";
         userToken.value = null;
         errorMsg.userLogin.value = error.message;

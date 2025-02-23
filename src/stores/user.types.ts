@@ -20,10 +20,15 @@ export type UserPerformaceDataPoint = {
   value: number;
 };
 
-// Maybe ?
-export type User = {
+export type UserInfo = {
   id: string;
+  name: string;
   email: string;
+};
+
+export type UserData = {
+  userInfo: UserInfo;
   statistics: UserStatistics;
+  performance: UserPerformaceDataPoint[];
   projects: UserProject[];
 };

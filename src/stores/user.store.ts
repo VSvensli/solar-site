@@ -1,121 +1,60 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { type UserStatistics, type UserProject, type UserPerformaceDataPoint } from "./user.types";
-
-const mockUserPerformance: Array<UserPerformaceDataPoint> = [
-  { timestamp: new Date("2021-01-01"), value: 1000 },
-  { timestamp: new Date("2021-01-02"), value: 1001 },
-  { timestamp: new Date("2021-01-03"), value: 1002 },
-  { timestamp: new Date("2021-01-04"), value: 1003 },
-  { timestamp: new Date("2021-01-05"), value: 1004 },
-];
-
-const mockUserStatistics: UserStatistics = {
-  accountBalance: 1000,
-  cellsOwned: 100,
-  projectsOwned: 5,
-  totalInvested: 10000,
-  totalEarnings: 1000,
-  totalEnergyGenerated: 10000,
-  maximumPowerGeneration: 1000,
-};
-
-const mockUserProjects: Array<UserProject> = [
-  {
-    projectId: "1",
-    cellIds: ["1", "2"],
-    percentageOwned: 0.023,
-    timeOfPurchase: new Date(Date.parse("2025-02-17T03:24:00Z")),
-  },
-  {
-    projectId: "2",
-    cellIds: ["1", "2"],
-    percentageOwned: 0.5,
-    timeOfPurchase: new Date("2024-12-17T03:24:00"),
-  },
-  {
-    projectId: "3",
-    cellIds: ["1", "2"],
-    percentageOwned: 0.01,
-    timeOfPurchase: new Date("2024-12-17T03:24:00"),
-  },
-];
+import { type UserStatistics, type UserProject, type UserPerformaceDataPoint, type UserData } from "./user.types";
+import { useAuthStore } from "./auth.store";
 
 export const useUserStore = defineStore("user", () => {
   const status = {
-    fetchUserProjects: ref<"idle" | "loading" | "success" | "error">("idle"),
-    fetchUserPerformance: ref<"idle" | "loading" | "success" | "error">("idle"),
-    fetchUserStatistics: ref<"idle" | "loading" | "success" | "error">("idle"),
-    fetchProjectProfits: ref<"idle" | "loading" | "success" | "error">("idle"),
+    fetchUserData: ref<"idle" | "loading" | "success" | "error">("idle"),
     postCellPurchaseRequest: ref<"idle" | "loading" | "success" | "error">("idle"),
   };
 
   const errorMsg = {
-    fetchProjectProfits: ref<string | null>(null),
-    fetchUserProjects: ref<string | null>(null),
-    fetchUserPerformance: ref<string | null>(null),
-    fetchUserStatistics: ref<string | null>(null),
+    fetchUserData: ref<string | null>(null),
     postCellPurchaseRequest: ref<string | null>(null),
   };
 
-  const userProjects = ref<Array<UserProject>>([]);
-
-  const fetchUserProjects = async () => {
-    status.fetchUserProjects.value = "loading";
-    errorMsg.fetchUserProjects.value = null;
-    try {
-      // const response = await fetch(`/api/users/${userId}/projects`);
-      // if (!response.ok) throw new Error("Failed to fetch user projects");
-
-      // const data: UserProjects = await response.json();
-      userProjects.value = mockUserProjects;
-      status.fetchUserProjects.value = "success";
-    } catch (err) {
-      errorMsg.fetchUserProjects.value = (err as Error).message;
-      status.fetchUserProjects.value = "error";
-    }
-  };
-
-  const userStatistics = ref<UserStatistics>({
-    accountBalance: 0,
-    cellsOwned: 0,
-    projectsOwned: 0,
-    totalInvested: 0,
-    totalEnergyGenerated: 0,
-    totalEarnings: 0,
-    maximumPowerGeneration: 0,
+  const userData = ref<UserData>({
+    userInfo: {
+      id: "",
+      name: "",
+      email: "",
+    },
+    statistics: {
+      accountBalance: 0,
+      cellsOwned: 0,
+      projectsOwned: 0,
+      totalInvested: 0,
+      totalEarnings: 0,
+      totalEnergyGenerated: 0,
+      maximumPowerGeneration: 0,
+    },
+    performance: [],
+    projects: [],
   });
 
-  const fetchUserStatistics = async () => {
-    status.fetchUserStatistics.value = "loading";
-    errorMsg.fetchUserStatistics.value = null;
+  const fetchUserData = async () => {
+    status.fetchUserData.value = "loading";
+    errorMsg.fetchUserData.value = null;
     try {
-      // const response = await fetch(`/api/users/${userId}/funds`);
-      // if (!response.ok) throw new Error("Failed to fetch user funds");
+      const response = await fetch("http://127.0.0.1:8000/users/me/data", {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${useAuthStore().userToken}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch user data");
+      const data = await response.json();
 
-      // const data: UserFunds = await response.json();
-      userStatistics.value = mockUserStatistics;
-      status.fetchUserStatistics.value = "success";
+      userData.value = data as UserData;
+
+      status.fetchUserData.value = "success";
     } catch (err) {
-      errorMsg.fetchUserStatistics.value = (err as Error).message;
-      status.fetchUserStatistics.value = "error";
+      errorMsg.fetchUserData.value = (err as Error).message;
+      status.fetchUserData.value = "error";
     }
   };
-
-  const userPerformance = ref<Array<UserPerformaceDataPoint>>([]);
-  async function fetchUserPerformance() {
-    status.fetchUserPerformance.value = "loading";
-    errorMsg.fetchUserPerformance.value = null;
-    try {
-      // const response = await fetch(`/api/users/${userId}/performance`);
-      // if (!response.ok) throw new Error("Failed to fetch user performance");
-      userPerformance.value = mockUserPerformance;
-      status.fetchUserPerformance.value = "success";
-    } catch (err) {
-      errorMsg.fetchUserPerformance.value = (err as Error).message;
-      status.fetchUserPerformance.value = "error";
-    }
-  }
 
   async function postCellPurchaseRequest() {
     fetch("https://your-backend-url.com/api/endpoint", {
@@ -126,7 +65,9 @@ export const useUserStore = defineStore("user", () => {
       body: JSON.stringify(selectedCellIds.value),
     })
       .then((response) => {
-        if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized");
+        } else if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         return response.json();
@@ -145,13 +86,9 @@ export const useUserStore = defineStore("user", () => {
   return {
     status,
     errorMsg,
-    fetchUserProjects,
-    fetchUserPerformance,
-    fetchUserStatistics,
-    userStatistics,
-    userPerformance,
-    userProjects,
     selectedCellIds,
     postCellPurchaseRequest,
+    fetchUserData,
+    userData,
   };
 });

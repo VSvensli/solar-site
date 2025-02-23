@@ -143,8 +143,55 @@ async def read_users_me(
     return current_user
 
 
-@router.get("/users/me/items/")
+mock_db = {
+    "user": {
+        "info": {
+            "id": "1",
+            "name": "John Doe",
+            "email": "",
+        },
+        "performance": [
+            {"timestamp": "2021-01-01", "value": 1000},
+            {"timestamp": "2021-01-02", "value": 1001},
+            {"timestamp": "2021-01-03", "value": 1002},
+            {"timestamp": "2021-01-04", "value": 1003},
+            {"timestamp": "2021-01-05", "value": 1004},
+        ],
+        "statistics": {
+            "accountBalance": 1000,
+            "cellsOwned": 100,
+            "projectsOwned": 5,
+            "totalInvested": 10010,
+            "totalEarnings": 1010,
+            "totalEnergyGenerated": 10000,
+            "maximumPowerGeneration": 1000,
+        },
+        "projects": [
+            {
+                "projectId": "1",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.023,
+                "timeOfPurchase": "2025-02-17T03:24:00Z",
+            },
+            {
+                "projectId": "2",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.5,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+            {
+                "projectId": "3",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.01,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+        ],
+    }
+}
+
+
+@router.get("/users/me/data")
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
-    return [{"item_id": "Foo", "owner": current_user.username}]
+    return mock_db["user"]
