@@ -22,7 +22,7 @@ const handleSubmit = () => {
       <h1 class="text-2xl font-bold">Create Account</h1>
       <Form @submit="handleSubmit">
         <div class="flex flex-col gap-1">
-          <InputText v-model="email" name="email" type="text" placeholder="e-mail" />
+          <InputText v-model="email" name="email" type="text" disabled placeholder="e-mail" />
         </div>
         <div class="flex flex-col gap-1 mt-1">
           <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
@@ -30,12 +30,9 @@ const handleSubmit = () => {
         <div class="flex flex-col gap-1 mt-1 mb-1">
           <Password name="confirmPassword" placeholder="Confirm Password" :feedback="false" disabled fluid />
         </div>
-        <Button type="submit" severity="secondary" label="Submit" />
+        <Button type="submit" severity="secondary" label="Submit" disabled />
       </Form>
-      <h4>
-        Note: There is currently no form of password handling, so only email is needed to create a new account, all
-        users have password "password".
-      </h4>
+      <h4 class="text-xs text-orange-400 font-bold">Not implemented</h4>
     </div>
   </div>
 </template>
