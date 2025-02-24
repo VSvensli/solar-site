@@ -12,8 +12,13 @@ const chartOptions = {
     },
   },
   elements: {
+    point: {
+      radius: 3,
+      backgroundColor: "green",
+    },
     line: {
       tension: 0.4,
+      borderColor: "green",
     },
   },
   scales: {
@@ -32,8 +37,7 @@ const chartData = computed(() => {
     datasets: [
       {
         data: userStore.userData.performance.map((item) => item.value),
-        borderColor: "#3e95cd",
-        fill: false,
+        fill: true,
       },
     ],
   };
@@ -42,6 +46,7 @@ const chartData = computed(() => {
 
 <template>
   <div>
-    <Chart type="line" :data="chartData" :options="chartOptions" class="h-[30rem]" />
+    <h2 class="text-2xl/7 font-semibold text-gray-700 p-3">Historic performance</h2>
+    <Chart type="line" :data="chartData" :options="chartOptions" />
   </div>
 </template>

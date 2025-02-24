@@ -3,7 +3,6 @@
 import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
-import { formatPower } from "@/utils";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -43,34 +42,26 @@ const chartOptions = {
       tension: 0.4,
     },
   },
-  // scales: {
-  //   y: {
-  //     ticks: {
-  //       callback: function (value: number, index: number, values: number[]) {
-  //         return parsePowerValueToString(value);
-  //       },
-  //     },
-  //   },
-  // },
 };
 
-// https://www.chartjs.org/docs/latest/samples/line/segments.html
+//https://www.chartjs.org/docs/latest/samples/line/segments.html
 const chartData = computed(() => ({
-  labels: powerData.value.map((dp) => dp.timestamp.toLocaleTimeString()), // X-axis labels
+  labels: powerData.value.map((dp) => dp.timestamp.toLocaleTimeString()),
   datasets: [
     {
       label: "Power Production",
-      data: powerData.value.map((dp) => dp.production), // Y-axis values
-      borderColor: "blue", // Default color for actual data
-      fill: true,
+      data: powerData.value.map((dp) => dp.production),
+      pointRadius: 0,
+      pointBackgroundColor: "gray",
+      pointBorderColor: "gray",
       segment: {
         borderDash: (ctx: ScriptableLineSegmentContext) => {
-          const index = ctx.p1DataIndex; // Get the next data point
-          return powerData.value[index]?.isPredicted ? [5, 5] : []; // Dotted if next is predicted
+          const index = ctx.p1DataIndex;
+          return powerData.value[index]?.isPredicted ? [5, 5] : [];
         },
         borderColor: (ctx: ScriptableLineSegmentContext) => {
           const index = ctx.p1DataIndex;
-          return powerData.value[index]?.isPredicted ? "red" : "blue"; // Change color dynamically
+          return powerData.value[index]?.isPredicted ? "rgba(201, 203, 207, 0.5)" : "rgba(54, 162, 235, 0.8)";
         },
       },
     },
@@ -80,11 +71,7 @@ const chartData = computed(() => ({
 
 <template>
   <div>
-    <h2>Site Power Production</h2>
-    <!-- <p v-if="status.fetchPowerData.value === 'loading'">Loading...</p>
-    <p v-if="status.fetchPowerData.value === 'error'">
-      {{ errorMsg.fetchPowerData.value }}
-    </p> -->
+    <h2 class="text-2xl/7 font-semibold text-gray-700 p-3">Power production</h2>
     <div>
       <Line v-if="powerData.length" :data="chartData" :options="chartOptions" />
     </div>
