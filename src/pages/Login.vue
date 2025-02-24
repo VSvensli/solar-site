@@ -40,12 +40,13 @@ const handleLoginSubmit = async () => {
         <Password name="password" placeholder="Password" :feedback="false" disabled fluid />
       </div>
       <Button @click="handleLoginSubmit" severity="secondary" label="Login" />
-      <h3>Setup new account here:</h3>
-      <h3 @click="router.push({ name: 'CreateAccount' })" class="cursor-pointer text-blue-500">Create Account</h3>
-      <h6>
-        Note: There is currently no form of password handling, so only email/username is needed to login. All users have
-        password "password".
-      </h6>
+      <div class="text-xs text-gray-500">
+        <p>
+          Note: There is currently no form of password handling, so only email/username is needed to login. All users
+          have password "password".
+        </p>
+        <p class="text-xs text-orange-400 font-bold">Use dummy username: dev</p>
+      </div>
     </div>
   </div>
 </template>
