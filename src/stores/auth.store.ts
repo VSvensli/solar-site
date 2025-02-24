@@ -46,7 +46,7 @@ export const useAuthStore = defineStore("auth", () => {
   async function userLogin(username: string, password: string) {
     status.userLogin.value = "loading";
     errorMsg.userLogin.value = null;
-    await fetch("/token", {
+    await fetch(`${window.location.origin}/api/token`, {
       method: "POST",
       headers: {
         accept: "application/json",

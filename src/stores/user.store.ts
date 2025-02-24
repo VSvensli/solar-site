@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", () => {
     status.fetchUserData.value = "loading";
     errorMsg.fetchUserData.value = null;
     try {
-      const response = await fetch("/users/me/data", {
+      const response = await fetch(`${window.location.origin}/api/users/me/data`, {
         method: "GET",
         headers: {
           accept: "application/json",
@@ -57,7 +57,7 @@ export const useUserStore = defineStore("user", () => {
   };
 
   async function postCellPurchaseRequest() {
-    fetch("https://your-backend-url.com/api/endpoint", {
+    fetch("not implemented", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

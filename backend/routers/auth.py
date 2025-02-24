@@ -17,7 +17,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 mock_db = {
     "dev": {

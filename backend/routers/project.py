@@ -303,7 +303,7 @@ mock_db["panels"] = [
     },
 ]
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 
 @router.get("/projects")
