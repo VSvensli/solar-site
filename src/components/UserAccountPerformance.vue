@@ -24,7 +24,7 @@ const chartOptions = {
   scales: {
     y: {
       ticks: {
-        callback: function (value: number, index: number, values: number[]) {
+        callback: function (value: number) {
           return "$ " + value;
         },
       },
