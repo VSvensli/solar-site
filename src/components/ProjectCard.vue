@@ -24,14 +24,29 @@ function goToProject(id: string) {
         </div>
       </div>
       <div class="grid gap-1 text-sm text-gray-500 grid-style">
-        <p class="truncate">
-          Location: {{ project.locationCity }},
-          {{ project.locationCountry }}
-        </p>
-        <p>Capacity: {{ project.installedCapacity }}</p>
-        <p>Completed: {{ project.completedDate }}</p>
-        <p>Cells: {{ project.numberOfCells }}</p>
-        <p>Price: ${{ project.unitPrice }}/cell</p>
+        <div class="flex items-center gap-2">
+          <img src="@/assets/icons/location.svg" class="w-6 h-6 fill-current" />
+          <p class="truncate">
+            {{ project.locationCity }},
+            {{ project.locationCountry }}
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <img src="@/assets/icons/construction.svg" class="w-6 h-6 fill-current" title="Constructed" />
+          <p>{{ project.completedDate }}</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <img src="@/assets/icons/power.svg" class="w-6 h-6 fill-current" />
+          <p>{{ project.installedCapacity }}</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <img src="@/assets/icons/panel.svg" class="w-6 h-6 fill-current" />
+          <p>{{ project.numberOfCells }} cells</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <img src="@/assets/icons/price.svg" class="w-6 h-6 fill-current" />
+          <p>${{ project.unitPrice }}/cell</p>
+        </div>
       </div>
     </div>
     <div class="mx-5">
