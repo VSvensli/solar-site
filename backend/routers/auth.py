@@ -19,10 +19,95 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+mock_db = {
+    "dev": {
+        "info": {
+            "id": "1",
+            "name": "John Doe",
+            "email": "",
+        },
+        "performance": [
+            {"timestamp": "2021-01-01", "value": 1000},
+            {"timestamp": "2021-01-02", "value": 1020},
+            {"timestamp": "2021-01-03", "value": 1200},
+            {"timestamp": "2021-01-04", "value": 1204},
+            {"timestamp": "2021-01-05", "value": 1500},
+        ],
+        "statistics": {
+            "accountBalance": 1000,
+            "cellsOwned": 100,
+            "projectsOwned": 5,
+            "totalInvested": 10010,
+            "totalEarnings": 1010,
+            "totalEnergyGenerated": 10000,
+            "maximumPowerGeneration": 1000,
+        },
+        "projects": [
+            {
+                "projectId": "CSP_FR_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.023,
+                "timeOfPurchase": "2025-02-17T03:24:00Z",
+            },
+            {
+                "projectId": "MSP_ES_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.5,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+            {
+                "projectId": "SLG_DE_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.01,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+        ],
+    },
+    "dev2": {
+        "info": {
+            "id": "1",
+            "name": "John Doe",
+            "email": "",
+        },
+        "performance": [
+            {"timestamp": "2021-01-01", "value": 1000},
+        ],
+        "statistics": {
+            "accountBalance": 5,
+            "cellsOwned": 5,
+            "projectsOwned": 2,
+            "totalInvested": 10,
+            "totalEarnings": 2,
+            "totalEnergyGenerated": 2,
+            "maximumPowerGeneration": 2,
+        },
+        "projects": [
+            {
+                "projectId": "CSP_FR_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.001,
+                "timeOfPurchase": "2025-02-17T03:24:00Z",
+            },
+            {
+                "projectId": "MSP_ES_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.15,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+            {
+                "projectId": "SLG_DE_001",
+                "cellIds": ["1", "2"],
+                "percentageOwned": 0.01,
+                "timeOfPurchase": "2024-12-17T03:24:00",
+            },
+        ],
+    },
+}
 
-fake_users_db = {
-    "vegard": {
-        "username": "vegard",
+
+mock_user_database = {
+    "dev": {
+        "username": "dev",
         "full_name": "John Doe",
         "email": "johndoe@example.com",
         "hashed_password": "supersecret!password",
@@ -96,7 +181,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(mock_user_database, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -122,7 +207,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(mock_user_database, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -143,55 +228,8 @@ async def read_users_me(
     return current_user
 
 
-mock_db = {
-    "user": {
-        "info": {
-            "id": "1",
-            "name": "John Doe",
-            "email": "",
-        },
-        "performance": [
-            {"timestamp": "2021-01-01", "value": 1000},
-            {"timestamp": "2021-01-02", "value": 1001},
-            {"timestamp": "2021-01-03", "value": 1002},
-            {"timestamp": "2021-01-04", "value": 1003},
-            {"timestamp": "2021-01-05", "value": 1004},
-        ],
-        "statistics": {
-            "accountBalance": 1000,
-            "cellsOwned": 100,
-            "projectsOwned": 5,
-            "totalInvested": 10010,
-            "totalEarnings": 1010,
-            "totalEnergyGenerated": 10000,
-            "maximumPowerGeneration": 1000,
-        },
-        "projects": [
-            {
-                "projectId": "1",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.023,
-                "timeOfPurchase": "2025-02-17T03:24:00Z",
-            },
-            {
-                "projectId": "2",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.5,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-            {
-                "projectId": "3",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.01,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-        ],
-    }
-}
-
-
 @router.get("/users/me/data")
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
-    return mock_db["user"]
+    return mock_db.get(current_user.username)
