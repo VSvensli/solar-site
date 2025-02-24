@@ -24,7 +24,7 @@ export const useProjectStore = defineStore("project", () => {
 
   async function fetchProjects() {
     status.fetchProjects.value = "loading";
-    fetch("http://127.0.0.1:8000/projects", {
+    fetch("/projects", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export const useProjectStore = defineStore("project", () => {
 
   async function fetchProject(projectId: string) {
     status.fetchProjects.value = "loading";
-    const url = `http://127.0.0.1:8000/projects/${projectId}`;
+    const url = `/projects/${projectId}`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -77,7 +77,7 @@ export const useProjectStore = defineStore("project", () => {
   const energyData = ref<Array<EnergyDataPoint>>([]);
   async function fetchEnergyData(projectId: string) {
     status.fetchEnergyData.value = "loading";
-    const url = `http://127.0.0.1:8000/projects/${projectId}/energy`;
+    const url = `/projects/${projectId}/energy`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -102,7 +102,7 @@ export const useProjectStore = defineStore("project", () => {
   const powerData = ref<Array<PowerDataPoint>>([]);
   async function fetchPowerData(projectId: string) {
     status.fetchPowerData.value = "loading";
-    const url = `http://127.0.0.1:8000/projects/${projectId}/power`;
+    const url = `/projects/${projectId}/power`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -127,7 +127,7 @@ export const useProjectStore = defineStore("project", () => {
   const panelArray = ref<Array<Panel>>([]);
   async function fetchPanelArray(projectId: string) {
     status.fetchPanelArray.value = "loading";
-    const url = `http://127.0.0.1:8000/projects/${projectId}/panels`;
+    const url = `/projects/${projectId}/panels`;
     fetch(url, {
       method: "GET",
       headers: {

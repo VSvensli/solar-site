@@ -2,6 +2,16 @@
 
 This is a MVP exploring the idea of fractional ownership and/or crowdfunded of solar parks. This could allow contributers to invest in solar projects to offset their carbon footprint.In addition, users can choose the color of the solar cells they purchase, allowing them to virtually "paint" the PV arrays.
 
+# Test the app using Docker
+
+'''bash
+docker pull vegardsa/solar-site:latest
+docker run -d --name solar-site-host -p 80:80 vegardsa/solar-site
+
+'''
+
+The app should then be available at http://127.0.0.1:80
+
 # How to run dev environment
 
 1. Setup and source python `venv`
@@ -35,5 +45,5 @@ pnpn dev
 - [ ] Add solar irradiateon from metoeblue
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
 
-- [ ] Dockerise
+- [x ] Dockerise
 - [ ] Add testing

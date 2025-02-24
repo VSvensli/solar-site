@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
@@ -5,10 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routers import auth, project
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 origins = [
-    "http://localhost",
-    "http://localhost:5173",
+    "http://127.0.0.1",
+    "http://127.0.0.1:5173",
 ]
 
 app = FastAPI()
@@ -23,4 +28,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(project.router)
 
-app.mount("/", StaticFiles(directory="../dist", html=True), name="static")
+if os.path.isdir("./dist"):
+    app.mount("/", StaticFiles(directory="./dist", html=True), name="static")
+else:
+    logger.error("No dist folder found. Please run `npm run build` to build the frontend.")

@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", () => {
     status.fetchUserData.value = "loading";
     errorMsg.fetchUserData.value = null;
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/me/data", {
+      const response = await fetch("/users/me/data", {
         method: "GET",
         headers: {
           accept: "application/json",
