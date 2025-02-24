@@ -38,9 +38,7 @@ async function processPayment() {
     <div>
       <h2>Selected Cells</h2>
       <ul>
-        <li v-for="cell in userStore.selectedCellIds" :key="cell">
-          Cell {{ cell }}
-        </li>
+        <li v-for="cell in userStore.selectedCellIds" :key="cell">Cell {{ cell }}</li>
       </ul>
       <Button @click="userStore.selectedCellIds = []" label="Clear Selection" />
     </div>
@@ -49,7 +47,7 @@ async function processPayment() {
         @click="
           router.push({
             name: 'ProjectDetails',
-            params: { id: `${projectStore.currentProject?.id}` },
+            params: { id: `${projectStore.currentProject?.projectId}` },
           })
         "
         label="Back to Project"

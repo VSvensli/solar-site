@@ -23,6 +23,6 @@ const project = computed(() => projectStore.findProjectById(props.userProject.pr
     <p class="text-sm text-gray-500">Owned since {{ userProject.timeOfPurchase }}</p>
     <p class="text-sm text-gray-500">You own {{ userProject.cellIds.length }} cells</p>
     <p class="text-sm text-gray-500">Percentage of cells owned {{ userProject.percentageOwned }}</p>
-    {{ project.id }}
+    {{ project.projectId }}
   </div>
 </template>

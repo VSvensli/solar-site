@@ -47,7 +47,7 @@ export const useProjectStore = defineStore("project", () => {
   }
 
   function findProjectById(id: string): Project | undefined {
-    return projects.value.find((project) => project.id === id);
+    return projects.value.find((project) => project.projectId === id);
   }
 
   async function fetchProject(projectId: string) {

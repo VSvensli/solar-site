@@ -1,5 +1,5 @@
 export type Project = {
-  id: string;
+  projectId: string;
   name: string;
   locationCity: string;
   locationCountry: string;
@@ -24,7 +24,7 @@ export type PowerDataPoint = {
 };
 
 export type Cell = {
-  id: string;
+  cellId: string;
   ownerId: string;
   price: number;
   cellIndex: number;
@@ -32,7 +32,8 @@ export type Cell = {
 };
 
 export type Panel = {
-  id: string;
+  projectId: string;
+  panelId: string;
   description: string;
   cellRows: number;
   cellColumns: number;

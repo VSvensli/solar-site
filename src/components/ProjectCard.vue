@@ -35,7 +35,12 @@ function goToProject(id: string) {
       </div>
     </div>
     <div class="mx-5">
-      <Button v-if="project.id" @click="goToProject(project.id)" label="View project" class="whitespace-nowrap" />
+      <Button
+        v-if="project.projectId"
+        @click="goToProject(project.projectId)"
+        label="View project"
+        class="whitespace-nowrap"
+      />
     </div>
   </div>
 </template>

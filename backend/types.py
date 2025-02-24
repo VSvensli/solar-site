@@ -32,7 +32,7 @@ class User(BaseModel):
 
 
 class Project(BaseModel):
-    id: str
+    projectId: str
     name: str
     locationCity: str
     locationCountry: str
@@ -57,7 +57,7 @@ class PowerDataPoint(BaseModel):
 
 
 class Cell(BaseModel):
-    id: str
+    cellId: str
     ownerId: str
     price: float
     cellIndex: int
@@ -65,7 +65,8 @@ class Cell(BaseModel):
 
 
 class Panel(BaseModel):
-    id: str
+    projectId: str
+    panelId: str
     description: str
     cellRows: int
     cellColumns: int

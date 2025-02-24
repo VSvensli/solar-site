@@ -12,7 +12,7 @@ const projectStore = useProjectStore();
     <div class="space-y-2 border-2 border-gray-300 rounded-lg p-3">
       <ProjectCard
         v-for="project in projectStore.projects"
-        :key="project.id"
+        :key="project.projectId"
         :project="project"
         class="[&:not(:last-child)]:border-b-2 p-4 border-gray-300"
       ></ProjectCard>
