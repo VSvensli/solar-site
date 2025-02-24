@@ -14,7 +14,7 @@ const router = useRouter();
 async function processPayment() {
   await userStore.postCellPurchaseRequest();
 
-  if (userStore.status.fetchProjectProfits === "success") {
+  if (userStore.status.fetchUserData === "success") {
     toast.add({
       severity: "error",
       summary: "Error",
@@ -38,7 +38,7 @@ async function processPayment() {
     <div>
       <h2>Selected Cells</h2>
       <ul>
-        <li v-for="cell in userStore.selectedCellIds" :key="cell">Cell {{ cell }}</li>
+        <li v-for="cell in userStore.selectedCellIds" :key="cell.cellId">Cell {{ cell }}</li>
       </ul>
       <Button @click="userStore.selectedCellIds = []" label="Clear Selection" />
     </div>

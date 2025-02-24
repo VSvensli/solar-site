@@ -2,28 +2,43 @@
 import { useUserStore } from "@/stores/user.store";
 import { computed } from "vue";
 import { formatDollar, formatEnergy, formatPower } from "@/utils";
-import Button from "primevue/button";
 
 const userStore = useUserStore();
 const statistics = computed(() => userStore.userData.statistics);
 </script>
 
 <template>
-  <div>
-    <div>
-      <p class="text-2xl/7 font-bold text-gray-900">Overview</p>
-      <p class="text-xl text-gray-900">Balance: {{ formatDollar(statistics.accountBalance) }}</p>
-      <p class="text-md font-medium text-gray-900">Total invested: {{ formatDollar(statistics.totalInvested) }}</p>
-      <p class="m-0">Total earned: {{ formatDollar(statistics.totalEarnings) }}</p>
-      <p class="m-0">Total energy generated: {{ formatEnergy(statistics.totalEnergyGenerated) }}</p>
-      <p class="m-0">
-        Max power generation capacity:
-        {{ formatPower(userStore.userData.statistics.maximumPowerGeneration) }}
-      </p>
-      <p class="m-0">Number of cells owned {{ statistics.cellsOwned }}</p>
+  <h2 class="text-2xl/7 font-semibold text-gray-700 p-3">Overview</h2>
+
+  <div class="space-y-3 p-3">
+    <div class="flex justify-between">
+      <span class="font-medium">Account Balance:</span>
+      <span class="text-gray-700">{{ formatDollar(statistics.accountBalance) }}</span>
     </div>
-    <div v-tooltip="'Not implemented'">
-      <Button label="Add funds" disabled />
+
+    <div class="flex justify-between">
+      <span class="font-medium">Total Invested:</span>
+      <span class="text-gray-700">{{ formatDollar(statistics.totalInvested) }}</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="font-medium">Total Earnings:</span>
+      <span class="text-gray-700">{{ formatDollar(statistics.totalEarnings) }}</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="font-medium">Energy Generated:</span>
+      <span class="text-gray-700">{{ formatEnergy(statistics.totalEnergyGenerated) }}</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="font-medium">Max Power Generation:</span>
+      <span class="text-gray-700">{{ formatPower(userStore.userData.statistics.maximumPowerGeneration) }}</span>
+    </div>
+
+    <div class="flex justify-between">
+      <span class="font-medium">Cells Owned:</span>
+      <span class="text-gray-700">{{ statistics.cellsOwned }}</span>
     </div>
   </div>
 </template>
