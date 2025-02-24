@@ -4,11 +4,11 @@ This is a MVP exploring the idea of fractional ownership and/or crowdfunded of s
 
 # Test the app using Docker
 
-'''bash
+```bash
 docker pull vegardsa/solar-site:latest
 docker run -d --name solar-site-host -p 80:80 vegardsa/solar-site
 
-'''
+```
 
 The app should then be available at http://127.0.0.1:80
 
