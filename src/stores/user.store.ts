@@ -81,7 +81,20 @@ export const useUserStore = defineStore("user", () => {
       });
   }
 
-  const selectedCellIds = ref<Array<string>>([]);
+  type CellSelection = {
+    cellId: string;
+    arrayId: string;
+    projectId: string;
+  };
+  const selectedCellIds = ref<Array<CellSelection>>([]);
+  function toggleCellSelection(cellId: string, arrayId: string, projectId: string) {
+    const cellIndex = selectedCellIds.value.findIndex((cell) => cell.cellId === cellId);
+    if (cellIndex === -1) {
+      selectedCellIds.value.push({ cellId, arrayId, projectId });
+    } else {
+      selectedCellIds.value.splice(cellIndex, 1);
+    }
+  }
 
   return {
     status,
@@ -90,5 +103,6 @@ export const useUserStore = defineStore("user", () => {
     postCellPurchaseRequest,
     fetchUserData,
     userData,
+    toggleCellSelection,
   };
 });
