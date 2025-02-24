@@ -5,15 +5,6 @@ import { useRouter } from "vue-router";
 const authStore = useAuthStore();
 const router = useRouter();
 
-function handleUserIconClick() {
-  if (authStore.isAuthenticated) {
-    // Redirect to the user's profile if authenticated
-    router.push({ name: "UserDashboard" });
-  } else {
-    // Redirect to the login/signup page if not authenticated
-    router.push({ name: "Login" });
-  }
-}
 function handleLogout() {
   authStore.userLogout();
   router.push({ name: "Home" });
@@ -21,13 +12,29 @@ function handleLogout() {
 </script>
 
 <template>
-  <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
-    <router-link to="/" class="text-white hover:text-gray-400"> Home </router-link>
-
-    <div @click="handleUserIconClick" class="text-white hover:text-gray-400 cursor-pointer hover:underline">
-      <span v-if="authStore.isAuthenticated">My Dashboard</span>
-      <span v-else>Login/Signup</span>
+  <div class="flex justify-between items-center w-full p-4 px-10 border-b-2 border-gray-200 font-mono font-semibold">
+    <div class="flex space-x-4">
+      <div @click="router.push({ name: 'Home' })" class="hover:text-gray-400">Home</div>
+      <div v-if="authStore.isAuthenticated" @click="router.push({ name: 'UserDashboard' })" class="hover:text-gray-400">
+        Dashboard
+      </div>
     </div>
-    <button v-if="authStore.isAuthenticated" @click="handleLogout" class="hover:underline">Logout</button>
+    <div class="flex space-x-4">
+      <div
+        v-if="!authStore.isAuthenticated"
+        @click="router.push({ name: 'Login' })"
+        class="hover:text-gray-400 cursor-pointer"
+      >
+        Login
+      </div>
+      <div
+        v-if="!authStore.isAuthenticated"
+        @click="router.push({ name: 'CreateAccount' })"
+        class="hover:text-gray-400"
+      >
+        Signup
+      </div>
+      <div v-if="authStore.isAuthenticated" @click="handleLogout" class="hover:text-gray-400">Logout</div>
+    </div>
   </div>
 </template>
