@@ -37,7 +37,7 @@ pnpn dev
 ```
 
 ## Todo:
-
+- [ ] Remove primeVue as a dependecy
 - [ ] Add user creation
 - [ ] Add sqlite instead of using dicts to mock the database
 - [ ] Finish chechout page and add post request for cell purchase
@@ -45,5 +45,5 @@ pnpn dev
 - [ ] Add solar irradiateon from metoeblue
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
 
-- [x ] Dockerise
+- [x] Dockerise
 - [ ] Add testing
