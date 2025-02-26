@@ -26,9 +26,14 @@ class UserPerformaceDataPoint(BaseModel):
 
 class User(BaseModel):
     id: str
-    email: str
+    username: str
+
+
+class UserData(BaseModel):
+    user: User
     statistics: UserStatistics
     projects: list[UserProject]
+    performance: list[UserPerformaceDataPoint]
 
 
 class Project(BaseModel):
@@ -70,4 +75,4 @@ class Panel(BaseModel):
     description: str
     cellRows: int
     cellColumns: int
-    cells: list[Cell]
+    cells: list[Cell] | None

@@ -10,6 +10,10 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from jwt.exceptions import InvalidTokenError
 
+from backend.request_types import UserStatistics, UserProject, UserData, UserPerformaceDataPoint
+import backend.query as query
+from backend.request_types import User
+
 import jwt
 
 SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5"  # Dummy secret key
@@ -19,108 +23,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 router = APIRouter(prefix="/api")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-mock_db = {
-    "dev": {
-        "info": {
-            "id": "1",
-            "name": "John Doe",
-            "email": "",
-        },
-        "performance": [
-            {"timestamp": "2021-01-01", "value": 1000},
-            {"timestamp": "2021-01-02", "value": 1020},
-            {"timestamp": "2021-01-03", "value": 1200},
-            {"timestamp": "2021-01-04", "value": 1204},
-            {"timestamp": "2021-01-05", "value": 1500},
-        ],
-        "statistics": {
-            "accountBalance": 1000,
-            "cellsOwned": 100,
-            "projectsOwned": 5,
-            "totalInvested": 10010,
-            "totalEarnings": 1010,
-            "totalEnergyGenerated": 10000,
-            "maximumPowerGeneration": 1000,
-        },
-        "projects": [
-            {
-                "projectId": "CSP_FR_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.023,
-                "timeOfPurchase": "2025-02-17T03:24:00Z",
-            },
-            {
-                "projectId": "MSP_ES_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.5,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-            {
-                "projectId": "SLG_DE_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.01,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-        ],
-    },
-    "dev2": {
-        "info": {
-            "id": "1",
-            "name": "John Doe",
-            "email": "",
-        },
-        "performance": [
-            {"timestamp": "2021-01-01", "value": 1000},
-        ],
-        "statistics": {
-            "accountBalance": 5,
-            "cellsOwned": 5,
-            "projectsOwned": 2,
-            "totalInvested": 10,
-            "totalEarnings": 2,
-            "totalEnergyGenerated": 2,
-            "maximumPowerGeneration": 2,
-        },
-        "projects": [
-            {
-                "projectId": "CSP_FR_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.001,
-                "timeOfPurchase": "2025-02-17T03:24:00Z",
-            },
-            {
-                "projectId": "MSP_ES_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.15,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-            {
-                "projectId": "SLG_DE_001",
-                "cellIds": ["1", "2"],
-                "percentageOwned": 0.01,
-                "timeOfPurchase": "2024-12-17T03:24:00",
-            },
-        ],
-    },
-}
-
-
-mock_user_database = {
-    "dev": {
-        "username": "dev",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "supersecret!password",
-        "disabled": False,
-    },
-    "alice": {
-        "username": "alice",
-        "full_name": "Alice Wonderson",
-        "email": "alice@example.com",
-        "hashed_password": "supersecret!password",
-        "disabled": True,
-    },
-}
 
 
 class Token(BaseModel):
@@ -132,23 +34,6 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
-    disabled: bool | None = None
-
-
-class UserInDB(User):
-    hashed_password: str
-
-
-def get_user(db, username: str) -> UserInDB | None:
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return hashed_password.partition("!")[-1] == plain_password
 
@@ -157,13 +42,13 @@ def hash_password(password: str) -> str:
     return "supersecret!" + password
 
 
-def authenticate_user(fake_db, username: str, password: str) -> UserInDB | bool:
-    user = get_user(fake_db, username)
+def authenticate_user(username: str, password: str) -> User | bool:
+    user = query.get_user(username)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         return False
-    return user
+    return User(id=user.id, username=user.username)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
@@ -181,7 +66,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
-    user = authenticate_user(mock_user_database, form_data.username, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -207,7 +92,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user(mock_user_database, username=token_data.username)
+    user = query.get_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
@@ -216,8 +101,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
+    # TODO Add again later
+    # if current_user.disabled:
+    #     raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
@@ -232,4 +118,54 @@ async def read_users_me(
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ):
-    return mock_db.get(current_user.username)
+    return draft_user_data_quary(current_user.id)
+
+
+def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPoint]:
+    mock_data = [
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 150.0},
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 170.0},
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 210.0},
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 250.0},
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 300.0},
+        {"timestamp": "2025-02-21T08:00:00Z", "value": 380.0},
+    ]
+    user_performance = []
+    for data in mock_data:
+        user_performance.append(UserPerformaceDataPoint(**data))
+    return user_performance
+
+
+def draft_user_data_quary(user_id: str) -> UserData:
+    user_projects = []
+    for user_project in query.get_user_projects(user_id=user_id):
+        user_projects.append(
+            UserProject(
+                projectId=user_project.project_id,
+                cellIds=["1", "2", "3"],  # TODO: make a quary to find which cells are owned by the user
+                percentageOwned=user_project.percentage_owned,
+                timeOfPurchase=user_project.time_of_purchase,
+            )
+        )
+
+    # TODO: make a quary to find/calculate the statistics
+    user_statistics = {
+        "accountBalance": 1000,
+        "cellsOwned": 100,
+        "projectsOwned": 5,
+        "totalInvested": 10010,
+        "totalEarnings": 1010,
+        "totalEnergyGenerated": 10000,
+        "maximumPowerGeneration": 1000,
+    }
+    user_statistics = UserStatistics(**user_statistics)
+    return UserData(
+        user=User(id="1", username="test"),
+        statistics=user_statistics,
+        projects=user_projects,
+        performance=mock_user_performance_quary(user_id),
+    )
+
+
+if __name__ == "__main__":
+    mock_user_performance_quary("s")

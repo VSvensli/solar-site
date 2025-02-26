@@ -22,8 +22,7 @@ export type UserPerformaceDataPoint = {
 
 export type UserInfo = {
   id: string;
-  name: string;
-  email: string;
+  username: string;
 };
 
 export type UserData = {

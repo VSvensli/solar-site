@@ -17,8 +17,7 @@ export const useUserStore = defineStore("user", () => {
   const userData = ref<UserData>({
     userInfo: {
       id: "",
-      name: "",
-      email: "",
+      username: "",
     },
     statistics: {
       accountBalance: 0,
@@ -48,6 +47,8 @@ export const useUserStore = defineStore("user", () => {
       const data = await response.json();
 
       userData.value = data as UserData;
+
+      console.log(userData.value);
 
       status.fetchUserData.value = "success";
     } catch (err) {
