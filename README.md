@@ -39,7 +39,7 @@ pnpn dev
 ## Todo:
 - [ ] Remove primeVue as a dependecy
 - [ ] Add user creation
-- [ ] Add sqlite instead of using dicts to mock the database
+- [x] Add sqlite instead of using dicts to mock the database
 - [ ] Finish chechout page and add post request for cell purchase
 - [ ] Add information about power prices from Entose
 - [ ] Add solar irradiateon from metoeblue
