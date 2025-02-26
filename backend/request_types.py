@@ -36,6 +36,8 @@ class Project(BaseModel):
     name: str
     locationCity: str
     locationCountry: str
+    locationLatitude: float
+    locationLongitude: float
     locationBiddingZone: str
     installedCapacity: str
     description: str
@@ -43,6 +45,11 @@ class Project(BaseModel):
     unitPrice: float
     isCompleted: bool
     completedDate: str
+
+
+class PowerPriceDataPoint(BaseModel):
+    timestamp: str
+    price: float
 
 
 class EnergyDataPoint(BaseModel):
