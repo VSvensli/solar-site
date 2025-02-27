@@ -37,12 +37,13 @@ pnpn dev
 ```
 
 ## Todo:
+- [ ] Refactore *.store.ts with unity types
 - [ ] Remove primeVue as a dependecy
 - [ ] Add user creation
 - [x] Add sqlite instead of using dicts to mock the database
-- [ ] Finish chechout page and add post request for cell purchase
+- [ ] Finish checkout page and add post request for cell purchase
 - [ ] Add information about power prices from Entose
-- [ ] Add solar irradiateon from metoeblue
+- [ ] Add solar irradiateon from openweatherapi (https://openweathermap.org/api/solar-radiation)
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
 
 - [x] Dockerise
