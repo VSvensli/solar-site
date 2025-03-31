@@ -21,6 +21,7 @@ def execute_batch_query(query: str, params_list: list[tuple]):
         conn.commit()
 
 
+# Note this should be done programatically where only the row class and data is passed in
 def insert_user(
     id: str,
     username: str,

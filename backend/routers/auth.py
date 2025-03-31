@@ -10,9 +10,14 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from jwt.exceptions import InvalidTokenError
 
-from backend.request_types import UserStatistics, UserProject, UserData, UserPerformaceDataPoint
+from backend.response_types import (
+    UserStatisticsResponse,
+    UserProjectResponse,
+    UserDataResponse,
+    UserPerformaceDataPointResponse,
+)
 import backend.query as query
-from backend.request_types import User
+from backend.response_types import UserResponse
 
 import jwt
 
@@ -42,13 +47,13 @@ def hash_password(password: str) -> str:
     return "supersecret!" + password
 
 
-def authenticate_user(username: str, password: str) -> User | bool:
+def authenticate_user(username: str, password: str) -> UserResponse | bool:
     user = query.get_user(username)
     if not user:
         return False
     if not verify_password(password, user.password):
         return False
-    return User(id=user.id, username=user.username)
+    return UserResponse(id=user.id, username=user.username)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
@@ -99,7 +104,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 
 
 async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
 ):
     # TODO Add again later
     # if current_user.disabled:
@@ -109,19 +114,19 @@ async def get_current_active_user(
 
 @router.get("/users/me")
 async def read_users_me(
-    current_user: Annotated[User, Depends(get_current_active_user)],
+    current_user: Annotated[UserResponse, Depends(get_current_active_user)],
 ):
     return current_user
 
 
 @router.get("/users/me/data")
 async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_active_user)],
+    current_user: Annotated[UserResponse, Depends(get_current_active_user)],
 ):
     return draft_user_data_quary(current_user.id)
 
 
-def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPoint]:
+def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPointResponse]:
     mock_data = [
         {"timestamp": "2025-02-21T08:00:00Z", "value": 150.0},
         {"timestamp": "2025-02-21T08:00:00Z", "value": 170.0},
@@ -132,15 +137,15 @@ def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPoint]:
     ]
     user_performance = []
     for data in mock_data:
-        user_performance.append(UserPerformaceDataPoint(**data))
+        user_performance.append(UserPerformaceDataPointResponse(**data))
     return user_performance
 
 
-def draft_user_data_quary(user_id: str) -> UserData:
+def draft_user_data_quary(user_id: str) -> UserDataResponse:
     user_projects = []
     for user_project in query.get_user_projects(user_id=user_id):
         user_projects.append(
-            UserProject(
+            UserProjectResponse(
                 projectId=user_project.project_id,
                 cellIds=["1", "2", "3"],  # TODO: make a quary to find which cells are owned by the user
                 percentageOwned=user_project.percentage_owned,
@@ -158,9 +163,9 @@ def draft_user_data_quary(user_id: str) -> UserData:
         "totalEnergyGenerated": 10000,
         "maximumPowerGeneration": 1000,
     }
-    user_statistics = UserStatistics(**user_statistics)
-    return UserData(
-        user=User(id="1", username="test"),
+    user_statistics = UserStatisticsResponse(**user_statistics)
+    return UserDataResponse(
+        user=UserResponse(id="1", username="test"),
         statistics=user_statistics,
         projects=user_projects,
         performance=mock_user_performance_quary(user_id),

@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 
 
-class UserStatistics(BaseModel):
+class UserStatisticsResponse(BaseModel):
     accountBalance: float
     cellsOwned: int
     projectsOwned: int
@@ -12,31 +12,31 @@ class UserStatistics(BaseModel):
     maximumPowerGeneration: float
 
 
-class UserProject(BaseModel):
+class UserProjectResponse(BaseModel):
     projectId: str
     cellIds: list[str]
     percentageOwned: float
     timeOfPurchase: str
 
 
-class UserPerformaceDataPoint(BaseModel):
+class UserPerformaceDataPointResponse(BaseModel):
     timestamp: str
     value: float
 
 
-class User(BaseModel):
+class UserResponse(BaseModel):
     id: str
     username: str
 
 
-class UserData(BaseModel):
-    user: User
-    statistics: UserStatistics
-    projects: list[UserProject]
-    performance: list[UserPerformaceDataPoint]
+class UserDataResponse(BaseModel):
+    user: UserResponse
+    statistics: UserStatisticsResponse
+    projects: list[UserProjectResponse]
+    performance: list[UserPerformaceDataPointResponse]
 
 
-class Project(BaseModel):
+class ProjectResponse(BaseModel):
     projectId: str
     name: str
     locationCity: str
@@ -52,17 +52,17 @@ class Project(BaseModel):
     completedDate: str
 
 
-class PowerPriceDataPoint(BaseModel):
+class PowerPriceDataPointResponse(BaseModel):
     timestamp: str
     price: float
 
 
-class EnergyDataPoint(BaseModel):
+class EnergyDataPointResponse(BaseModel):
     timestamp: str
     production: int
 
 
-class PowerDataPoint(BaseModel):
+class PowerDataPointResponse(BaseModel):
     timestamp: str
     production: int
     isPredicted: bool

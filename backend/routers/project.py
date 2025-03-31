@@ -1,4 +1,4 @@
-from backend.request_types import Project, EnergyDataPoint, PowerDataPoint, Panel, Cell
+from backend.response_types import ProjectResponse, EnergyDataPointResponse, PowerDataPointResponse, Panel, Cell
 from backend.schemas import DBPowerDataPoint
 import backend.query as query
 from fastapi import APIRouter, HTTPException, status
@@ -8,11 +8,11 @@ router = APIRouter(prefix="/api")
 
 
 @router.get("/projects")
-async def get_projects() -> list[Project]:
+async def get_projects() -> list[ProjectResponse]:
     projects = []
     for project in query.get_all_projects():
         projects.append(
-            Project(
+            ProjectResponse(
                 projectId=project.project_id,
                 name=project.name,
                 locationCity=project.location_city,
@@ -34,10 +34,10 @@ async def get_projects() -> list[Project]:
 
 
 @router.get("/projects/{project_id}")
-async def get_project(project_id: str) -> Project:
+async def get_project(project_id: str) -> ProjectResponse:
     project = query.get_project(project_id)
     if project:
-        return Project(
+        return ProjectResponse(
             projectId=project.project_id,
             name=project.name,
             locationCity=project.location_city,
@@ -58,11 +58,11 @@ async def get_project(project_id: str) -> Project:
 
 
 @router.get("/projects/{project_id}/energy")
-async def get_energy_data(project_id: str) -> list[EnergyDataPoint]:
+async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
     data_points = []
     for data_point in query.get_all_energy_data(project_id):
         data_points.append(
-            EnergyDataPoint(
+            EnergyDataPointResponse(
                 timestamp=data_point.timestamp,
                 production=data_point.value,
             )
@@ -80,11 +80,11 @@ def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
 
 
 @router.get("/projects/{project_id}/power")
-async def get_power_data(project_id: str) -> list[PowerDataPoint]:
+async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
     data_points = []
     for data_point in query.get_all_power_data(project_id):
         data_points.append(
-            PowerDataPoint(
+            PowerDataPointResponse(
                 timestamp=data_point.timestamp,
                 production=data_point.value,
                 isPredicted=is_data_point_predicted(data_point),
