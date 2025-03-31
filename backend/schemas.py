@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class UserRow:
+class DBUser:
     id: str
     username: str
     password: str
@@ -16,7 +16,7 @@ class UserRow:
 
 
 @dataclass
-class ProjectRow:
+class DBProject:
     project_id: str
     name: str
     location_city: str
@@ -33,7 +33,7 @@ class ProjectRow:
 
 
 @dataclass
-class PanelRow:
+class DBPanel:
     panel_id: str
     project_id: str
     description: str
@@ -42,7 +42,7 @@ class PanelRow:
 
 
 @dataclass
-class CellRow:
+class DBCell:
     cell_id: str
     owner_id: str | None
     panel_id: str
@@ -52,7 +52,7 @@ class CellRow:
 
 
 @dataclass
-class UserProjectRow:
+class DBUserProject:
     user_id: str
     project_id: str
     percentage_owned: float
@@ -60,21 +60,21 @@ class UserProjectRow:
 
 
 @dataclass
-class PowerDataPointRow:
+class DBPowerDataPoint:
     project_id: str
     timestamp: str
     value: float
 
 
 @dataclass
-class EnergyDataPointRow:
+class DBEnergyDataPoint:
     project_id: str
     timestamp: str
     value: float
 
 
 @dataclass
-class EnergyPriceRow:
+class DBEnergyPrice:
     bidding_zone: str
     timestamp: str
     price: float

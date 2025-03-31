@@ -1,5 +1,5 @@
 from backend.request_types import Project, EnergyDataPoint, PowerDataPoint, Panel, Cell
-from backend.schemas import PowerDataPointRow
+from backend.schemas import DBPowerDataPoint
 import backend.query as query
 from fastapi import APIRouter, HTTPException, status
 import datetime
@@ -75,7 +75,7 @@ async def get_energy_data(project_id: str) -> list[EnergyDataPoint]:
 
 
 # TODO: Move to prossesing.py
-def is_data_point_predicted(data_point: PowerDataPointRow) -> bool:
+def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
     return datetime.datetime.strptime(data_point.timestamp, "%Y-%m-%dT%H:%M:%SZ") > datetime.datetime.now()
 
 

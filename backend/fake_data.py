@@ -1,12 +1,12 @@
 from schemas import (
-    UserRow,
-    ProjectRow,
-    PanelRow,
-    CellRow,
-    UserProjectRow,
-    EnergyDataPointRow,
-    EnergyPriceRow,
-    PowerDataPointRow,
+    DBUser,
+    DBProject,
+    DBPanel,
+    DBCell,
+    DBUserProject,
+    DBEnergyDataPoint,
+    DBEnergyPrice,
+    DBPowerDataPoint,
 )
 from insert import (
     insert_user,
@@ -21,7 +21,7 @@ from insert import (
 
 
 users = [
-    UserRow(
+    DBUser(
         id="1",
         username="dev",
         password="supersecret!password",
@@ -37,7 +37,7 @@ users = [
 
 
 projects = [
-    ProjectRow(
+    DBProject(
         project_id="CSP_FR_001",
         name="Cestas Solar Park",
         location_city="Cestas",
@@ -58,7 +58,7 @@ projects = [
         completed_date="2015-01-01",
         is_completed=True,
     ),
-    ProjectRow(
+    DBProject(
         project_id="MSP_ES_001",
         name="Mula Solar Power Plant",
         location_city="Mula",
@@ -78,7 +78,7 @@ projects = [
         completed_date="2016-01-01",
         is_completed=True,
     ),
-    ProjectRow(
+    DBProject(
         project_id="SLG_DE_001",
         name="Solarpark Lieberose",
         location_city="Lieberose",
@@ -101,28 +101,28 @@ projects = [
 ]
 
 panels = [
-    PanelRow(
+    DBPanel(
         panel_id="1",
         project_id="CSP_FR_001",
         description="Panel 1",
         cell_rows=8,
         cell_columns=5,
     ),
-    PanelRow(
+    DBPanel(
         panel_id="2",
         project_id="CSP_FR_001",
         description="Panel 2",
         cell_rows=8,
         cell_columns=5,
     ),
-    PanelRow(
+    DBPanel(
         panel_id="3",
         project_id="MSP_ES_001",
         description="Panel 2",
         cell_rows=5,
         cell_columns=3,
     ),
-    PanelRow(
+    DBPanel(
         panel_id="4",
         project_id="SLG_DE_001",
         description="Panel 3",
@@ -134,7 +134,7 @@ panels = [
 
 cells = [
     *[
-        CellRow(
+        DBCell(
             cell_id=f"0_{i}",
             owner_id="1",
             panel_id="1",
@@ -145,7 +145,7 @@ cells = [
         for i in range(8 * 5 * 2)
     ],
     *[
-        CellRow(
+        DBCell(
             cell_id=f"1_{i}",
             owner_id="1",
             panel_id="2",
@@ -156,7 +156,7 @@ cells = [
         for i in range(5 * 3)
     ],
     *[
-        CellRow(
+        DBCell(
             cell_id=f"2_{i}",
             owner_id="1",
             panel_id="2",
@@ -169,13 +169,13 @@ cells = [
 ]
 
 user_projects = [
-    UserProjectRow(
+    DBUserProject(
         user_id="1",
         project_id="SLG_DE_001",
         percentage_owned=0.1,
         time_of_purchase="2025-02-21T12:00:00Z",
     ),
-    UserProjectRow(
+    DBUserProject(
         user_id="1",
         project_id="MSP_ES_001",
         percentage_owned=0.5,
@@ -184,27 +184,27 @@ user_projects = [
 ]
 
 power_data_points = [
-    PowerDataPointRow(
+    DBPowerDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T08:00:00Z",
         value=150.0,
     ),
-    PowerDataPointRow(
+    DBPowerDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T09:00:00Z",
         value=175.0,
     ),
-    PowerDataPointRow(
+    DBPowerDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T10:00:00Z",
         value=200.0,
     ),
-    PowerDataPointRow(
+    DBPowerDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T11:00:00Z",
         value=180.0,
     ),
-    PowerDataPointRow(
+    DBPowerDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T12:00:00Z",
         value=210.0,
@@ -212,27 +212,27 @@ power_data_points = [
 ]
 
 energy_data_points = [
-    EnergyDataPointRow(
+    DBEnergyDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T08:00:00Z",
         value=150.0,
     ),
-    EnergyDataPointRow(
+    DBEnergyDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T09:00:00Z",
         value=175.0,
     ),
-    EnergyDataPointRow(
+    DBEnergyDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T10:00:00Z",
         value=200.0,
     ),
-    EnergyDataPointRow(
+    DBEnergyDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T11:00:00Z",
         value=180.0,
     ),
-    EnergyDataPointRow(
+    DBEnergyDataPoint(
         project_id="CSP_FR_001",
         timestamp="2025-02-21T12:00:00Z",
         value=210.0,
@@ -241,22 +241,22 @@ energy_data_points = [
 
 
 energy_prices = [
-    EnergyPriceRow(
+    DBEnergyPrice(
         bidding_zone="FR",
         timestamp="2025-02-21T08:00:00",
         price=50.0,
     ),
-    EnergyPriceRow(
+    DBEnergyPrice(
         bidding_zone="FR",
         timestamp="2025-02-21T09:00:00",
         price=55.0,
     ),
-    EnergyPriceRow(
+    DBEnergyPrice(
         bidding_zone="FR",
         timestamp="2025-02-21T10:00:00",
         price=60.0,
     ),
-    EnergyPriceRow(
+    DBEnergyPrice(
         bidding_zone="FR",
         timestamp="2025-02-21T11:00:00",
         price=65.0,
