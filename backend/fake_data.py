@@ -8,16 +8,7 @@ from schemas import (
     DBEnergyPrice,
     DBPowerDataPoint,
 )
-from insert import (
-    insert_user,
-    insert_user_project,
-    insert_project,
-    insert_panel,
-    insert_cell,
-    insert_energy_data_point,
-    insert_power_data_point,
-    insert_energy_price,
-)
+from insert import insert
 
 
 users = [
@@ -273,25 +264,25 @@ if __name__ == "__main__":
     create_database()
 
     for user in users:
-        insert_user(**user.__dict__)
+        insert("users", user)
 
     for project in projects:
-        insert_project(**project.__dict__)
+        insert("projects", project)
 
     for panel in panels:
-        insert_panel(**panel.__dict__)
+        insert("panels", panel)
 
     for cell in cells:
-        insert_cell(**cell.__dict__)
+        insert("cells", cell)
 
     for user_project in user_projects:
-        insert_user_project(**user_project.__dict__)
+        insert("user_projects", user_project)
 
     for energy_price in energy_prices:
-        insert_energy_price(**energy_price.__dict__)
+        insert("energy_price", energy_price)
 
     for energy_data_point in energy_data_points:
-        insert_energy_data_point(**energy_data_point.__dict__)
+        insert("energy_data", energy_data_point)
 
     for power_data_point in power_data_points:
-        insert_power_data_point(**power_data_point.__dict__)
+        insert("power_data", power_data_point)
