@@ -37,7 +37,10 @@ pnpn dev
 ```
 
 ## Todo:
-- [ ] Refactore *.store.ts with unity types
+
+- [ ] Add faker
+- [ ] Handle expired tokens
+- [ ] Refactore \*.store.ts with unity types
 - [ ] Remove primeVue as a dependecy
 - [ ] Add user creation
 - [x] Add sqlite instead of using dicts to mock the database
