@@ -1,11 +1,15 @@
 from dataclasses import dataclass
+from typing import Union
 
 
 @dataclass
 class DBUser:
-    id: str
+    __table_name__ = "users"
+
+    id: int
     username: str
     password: str
+    is_active: bool = False
     account_balance: float = 0.0
     cells_owned: int = 0
     projects_owned: int = 0
@@ -17,7 +21,8 @@ class DBUser:
 
 @dataclass
 class DBProject:
-    project_id: str
+    __table_name__ = "projects"
+    id: str
     name: str
     location_city: str
     location_country: str
@@ -34,7 +39,8 @@ class DBProject:
 
 @dataclass
 class DBPanel:
-    panel_id: str
+    __table_name__ = "panels"
+    id: str
     project_id: str
     description: str
     cell_rows: int
@@ -43,7 +49,8 @@ class DBPanel:
 
 @dataclass
 class DBCell:
-    cell_id: str
+    __table_name__ = "cells"
+    id: str
     owner_id: str | None
     panel_id: str
     price: float
@@ -53,6 +60,8 @@ class DBCell:
 
 @dataclass
 class DBUserProject:
+    __table_name__ = "user_projects"
+    id: str
     user_id: str
     project_id: str
     percentage_owned: float
@@ -61,6 +70,8 @@ class DBUserProject:
 
 @dataclass
 class DBPowerDataPoint:
+    __table_name__ = "power_data"
+    id: str
     project_id: str
     timestamp: str
     value: float
@@ -68,6 +79,8 @@ class DBPowerDataPoint:
 
 @dataclass
 class DBEnergyDataPoint:
+    __table_name__ = "energy_data"
+    id: str
     project_id: str
     timestamp: str
     value: float
@@ -75,6 +88,19 @@ class DBEnergyDataPoint:
 
 @dataclass
 class DBEnergyPrice:
+    __table_name__ = "energy_price"
     bidding_zone: str
     timestamp: str
     price: float
+
+
+DBTypes = Union[
+    DBUser,
+    DBProject,
+    DBPanel,
+    DBCell,
+    DBUserProject,
+    DBPowerDataPoint,
+    DBEnergyDataPoint,
+    DBEnergyPrice,
+]
