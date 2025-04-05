@@ -41,15 +41,17 @@ pnpn dev
 - [ ] Add pagination capabilities to DBInterface
 - [ ] Add faker
 - [ ] Handle expired tokens
+- [ ] Add proper password hashing
 - [ ] Refactore \*.store.ts with unity types
 - [ ] Remove primeVue as a dependecy
-- [ ] Add user creation
+- [x] Add user creation
 - [x] Add sqlite instead of using dicts to mock the database
 - [ ] Finish checkout page and add post request for cell purchase
 - [ ] Add information about power prices from Entose
 - [ ] Add solar irradiateon from openweatherapi (https://openweathermap.org/api/solar-radiation)
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
 - [ ] Add email validation
+- [x] Add 404 page and route in routes
 
 - [x] Dockerise
 - [x] Add testing

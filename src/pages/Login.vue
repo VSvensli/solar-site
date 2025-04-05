@@ -6,7 +6,6 @@ import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";
 import { useToast } from "primevue/usetoast";
-import Toast from "primevue/toast";
 
 const toast = useToast();
 

@@ -17,16 +17,16 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = ref<boolean>(false);
   const userToken = ref<string | null>(null);
 
-  async function createUser(email: string, password: string) {
+  async function createUser(username: string, password: string) {
     status.createUser.value = "loading";
     errorMsg.createUser.value = null;
-    fetch("https://your-backend-url.com/api/endpoint", {
-      // replace URL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    await fetch("/api/users", {
       method: "POST",
       headers: {
+        accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore("auth", () => {
   async function userLogin(username: string, password: string) {
     status.userLogin.value = "loading";
     errorMsg.userLogin.value = null;
-    await fetch(`${window.location.origin}/api/token`, {
+    await fetch("/api/token", {
       method: "POST",
       headers: {
         accept: "application/json",

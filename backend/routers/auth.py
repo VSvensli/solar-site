@@ -28,10 +28,12 @@ class Token(BaseModel):
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    # Simulate a delay for hashing
     return hashed_password.partition("!")[-1] == plain_password
 
 
 def hash_password(password: str) -> str:
+    """Hash a password with a dummy algorithm for development."""
     return "supersecret!" + password
 
 
