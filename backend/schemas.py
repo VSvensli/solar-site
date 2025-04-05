@@ -5,10 +5,9 @@ from typing import Union
 @dataclass
 class DBUser:
     __table_name__ = "users"
-
-    id: int
-    username: str
-    password: str
+    id: str = None
+    username: str = ""
+    password: str = ""
     is_active: bool = False
     account_balance: float = 0.0
     cells_owned: int = 0
@@ -22,76 +21,76 @@ class DBUser:
 @dataclass
 class DBProject:
     __table_name__ = "projects"
-    id: str
-    name: str
-    location_city: str
-    location_country: str
-    latitude: float
-    longitude: float
-    bidding_zone: str
-    installed_capacity: str
-    description: str
-    number_of_cells: int
-    unit_price: float
-    completed_date: str | None
+    id: str = None
+    name: str = ""
+    location_city: str = ""
+    location_country: str = ""
+    latitude: float = 0.0
+    longitude: float = 0.0
+    bidding_zone: str = ""
+    installed_capacity: str = ""
+    description: str = ""
+    number_of_cells: int = 0
+    unit_price: float = 0.0
+    completed_date: str | None = None
     is_completed: bool = False
 
 
 @dataclass
 class DBPanel:
     __table_name__ = "panels"
-    id: str
-    project_id: str
-    description: str
-    cell_rows: int
-    cell_columns: int
+    id: str = None
+    project_id: str = ""
+    description: str = ""
+    cell_rows: int = 0
+    cell_columns: int = 0
 
 
 @dataclass
 class DBCell:
     __table_name__ = "cells"
-    id: str
-    user_id: str | None
-    panel_id: str
-    price: float
-    cell_index: int
-    color: str
+    id: str = None
+    user_id: str | None = None
+    panel_id: str = ""
+    price: float = 0.0
+    cell_index: int = 0
+    color: str = "#FFFFFF"
 
 
 @dataclass
 class DBUserProject:
     __table_name__ = "user_projects"
-    id: str
-    user_id: str
-    project_id: str
-    percentage_owned: float
-    time_of_purchase: str
+    id: str = None
+    user_id: str = ""
+    project_id: str = ""
+    percentage_owned: float = 0.0
+    time_of_purchase: str = ""
 
 
 @dataclass
 class DBPowerDataPoint:
     __table_name__ = "power_data"
-    id: str
-    project_id: str
-    timestamp: str
-    value: float
+    id: str = None
+    project_id: str = ""
+    timestamp: str = ""
+    value: float = 0.0
 
 
 @dataclass
 class DBEnergyDataPoint:
     __table_name__ = "energy_data"
-    id: str
-    project_id: str
-    timestamp: str
-    value: float
+    id: str = None
+    project_id: str = ""
+    timestamp: str = ""
+    value: float = 0.0
 
 
 @dataclass
 class DBEnergyPrice:
     __table_name__ = "energy_price"
-    bidding_zone: str
-    timestamp: str
-    price: float
+    bidding_zone: str = ""
+    timestamp: str = ""
+    price: float = 0.0
 
 
 DBTypes = Union[
