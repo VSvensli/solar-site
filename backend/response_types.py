@@ -68,18 +68,18 @@ class PowerDataPointResponse(BaseModel):
     isPredicted: bool
 
 
-class Cell(BaseModel):
+class CellResponse(BaseModel):
     cellId: str
-    ownerId: str
+    userId: str
     price: float
     cellIndex: int
     color: str
 
 
-class Panel(BaseModel):
+class PanelResponse(BaseModel):
     projectId: str
     panelId: str
     description: str
     cellRows: int
     cellColumns: int
-    cells: list[Cell] | None
+    cells: list[CellResponse] | None

@@ -9,14 +9,18 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import APIRouter
 from pydantic import BaseModel
 from jwt.exceptions import InvalidTokenError
-
+from backend.constants import DB_NAME
+from backend.schemas import (
+    DBUser,
+    DBUserProject,
+)
 from backend.response_types import (
     UserStatisticsResponse,
     UserProjectResponse,
     UserDataResponse,
     UserPerformaceDataPointResponse,
 )
-import backend.query as query
+from backend.db_interface import DBInterface
 from backend.response_types import UserResponse
 
 import jwt
@@ -25,6 +29,7 @@ SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5" 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+db = DBInterface(db_name=DB_NAME)
 
 router = APIRouter(prefix="/api")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -33,10 +38,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -48,7 +49,7 @@ def hash_password(password: str) -> str:
 
 
 def authenticate_user(username: str, password: str) -> UserResponse | bool:
-    user = query.get_user(username)
+    user = db.quary(DBUser).filter_by(username=username).one()
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -89,39 +90,42 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+    inactive_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Inactive user",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    user_not_found_exception = HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = query.get_user(username=token_data.username)
+
+    user = db.quary(DBUser).filter_by(username=username).one()
+    if user.disabled:
+        raise inactive_exception
     if user is None:
-        raise credentials_exception
+        raise user_not_found_exception
     return user
 
 
-async def get_current_active_user(
-    current_user: Annotated[UserResponse, Depends(get_current_user)],
-):
-    # TODO Add again later
-    # if current_user.disabled:
-    #     raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
-
-
-@router.get("/users/me")
+@router.get("/me")
 async def read_users_me(
-    current_user: Annotated[UserResponse, Depends(get_current_active_user)],
-):
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+) -> UserResponse:
     return current_user
 
 
-@router.get("/users/me/data")
+@router.get("/me/data")
 async def read_own_items(
-    current_user: Annotated[UserResponse, Depends(get_current_active_user)],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
 ):
     return draft_user_data_quary(current_user.id)
 
@@ -143,7 +147,7 @@ def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPointRes
 
 def draft_user_data_quary(user_id: str) -> UserDataResponse:
     user_projects = []
-    for user_project in query.get_user_projects(user_id=user_id):
+    for user_project in db.quary(DBUserProject).filter_by(user_id=user_id).all():
         user_projects.append(
             UserProjectResponse(
                 projectId=user_project.project_id,

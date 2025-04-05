@@ -1,4 +1,4 @@
-from schemas import (
+from backend.schemas import (
     DBUser,
     DBProject,
     DBPanel,
@@ -8,7 +8,7 @@ from schemas import (
     DBEnergyPrice,
     DBPowerDataPoint,
 )
-from insert import insert
+from backend.db_interface import DBInterface
 
 
 users = [
@@ -16,6 +16,7 @@ users = [
         id="1",
         username="dev",
         password="supersecret!password",
+        is_active=True,
         account_balance=1000.0,
         cells_owned=0,
         projects_owned=0,
@@ -29,7 +30,7 @@ users = [
 
 projects = [
     DBProject(
-        project_id="CSP_FR_001",
+        id="CSP_FR_001",
         name="Cestas Solar Park",
         location_city="Cestas",
         location_country="France",
@@ -50,7 +51,7 @@ projects = [
         is_completed=True,
     ),
     DBProject(
-        project_id="MSP_ES_001",
+        id="MSP_ES_001",
         name="Mula Solar Power Plant",
         location_city="Mula",
         location_country="Spain",
@@ -70,7 +71,7 @@ projects = [
         is_completed=True,
     ),
     DBProject(
-        project_id="SLG_DE_001",
+        id="SLG_DE_001",
         name="Solarpark Lieberose",
         location_city="Lieberose",
         location_country="Germany",
@@ -93,28 +94,28 @@ projects = [
 
 panels = [
     DBPanel(
-        panel_id="1",
+        id="1",
         project_id="CSP_FR_001",
         description="Panel 1",
         cell_rows=8,
         cell_columns=5,
     ),
     DBPanel(
-        panel_id="2",
+        id="2",
         project_id="CSP_FR_001",
         description="Panel 2",
         cell_rows=8,
         cell_columns=5,
     ),
     DBPanel(
-        panel_id="3",
+        id="3",
         project_id="MSP_ES_001",
         description="Panel 2",
         cell_rows=5,
         cell_columns=3,
     ),
     DBPanel(
-        panel_id="4",
+        id="4",
         project_id="SLG_DE_001",
         description="Panel 3",
         cell_rows=9,
@@ -126,8 +127,8 @@ panels = [
 cells = [
     *[
         DBCell(
-            cell_id=f"0_{i}",
-            owner_id="1",
+            id=f"0_{i}",
+            user_id="1",
             panel_id="1",
             price=2.50,
             cell_index=i,
@@ -137,8 +138,8 @@ cells = [
     ],
     *[
         DBCell(
-            cell_id=f"1_{i}",
-            owner_id="1",
+            id=f"1_{i}",
+            user_id="1",
             panel_id="2",
             price=1.50,
             cell_index=i,
@@ -148,8 +149,8 @@ cells = [
     ],
     *[
         DBCell(
-            cell_id=f"2_{i}",
-            owner_id="1",
+            id=f"2_{i}",
+            user_id="1",
             panel_id="2",
             price=3.50,
             cell_index=i,
@@ -161,12 +162,14 @@ cells = [
 
 user_projects = [
     DBUserProject(
+        id="1",
         user_id="1",
         project_id="SLG_DE_001",
         percentage_owned=0.1,
         time_of_purchase="2025-02-21T12:00:00Z",
     ),
     DBUserProject(
+        id="2",
         user_id="1",
         project_id="MSP_ES_001",
         percentage_owned=0.5,
@@ -176,26 +179,31 @@ user_projects = [
 
 power_data_points = [
     DBPowerDataPoint(
+        id="1",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T08:00:00Z",
         value=150.0,
     ),
     DBPowerDataPoint(
+        id="2",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T09:00:00Z",
         value=175.0,
     ),
     DBPowerDataPoint(
+        id="3",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T10:00:00Z",
         value=200.0,
     ),
     DBPowerDataPoint(
+        id="4",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T11:00:00Z",
         value=180.0,
     ),
     DBPowerDataPoint(
+        id="5",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T12:00:00Z",
         value=210.0,
@@ -204,26 +212,31 @@ power_data_points = [
 
 energy_data_points = [
     DBEnergyDataPoint(
+        id="1",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T08:00:00Z",
         value=150.0,
     ),
     DBEnergyDataPoint(
+        id="2",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T09:00:00Z",
         value=175.0,
     ),
     DBEnergyDataPoint(
+        id="3",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T10:00:00Z",
         value=200.0,
     ),
     DBEnergyDataPoint(
+        id="4",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T11:00:00Z",
         value=180.0,
     ),
     DBEnergyDataPoint(
+        id="5",
         project_id="CSP_FR_001",
         timestamp="2025-02-21T12:00:00Z",
         value=210.0,
@@ -263,26 +276,13 @@ if __name__ == "__main__":
         os.remove("solar.db")
     create_database()
 
-    for user in users:
-        insert("users", user)
+    db = DBInterface(db_name="solar.db")
 
-    for project in projects:
-        insert("projects", project)
-
-    for panel in panels:
-        insert("panels", panel)
-
-    for cell in cells:
-        insert("cells", cell)
-
-    for user_project in user_projects:
-        insert("user_projects", user_project)
-
-    for energy_price in energy_prices:
-        insert("energy_price", energy_price)
-
-    for energy_data_point in energy_data_points:
-        insert("energy_data", energy_data_point)
-
-    for power_data_point in power_data_points:
-        insert("power_data", power_data_point)
+    db.insert(users)
+    db.insert(projects)
+    db.insert(panels)
+    db.insert(cells)
+    db.insert(user_projects)
+    db.insert(energy_prices)
+    db.insert(power_data_points)
+    db.insert(energy_data_points)

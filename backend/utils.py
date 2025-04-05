@@ -11,6 +11,7 @@ def create_database():
         id TEXT PRIMARY KEY,
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        is_active BOOLEAN DEFAULT 0,
         account_balance REAL,
         cells_owned INTEGER,
         projects_owned INTEGER,

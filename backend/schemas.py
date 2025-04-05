@@ -51,7 +51,7 @@ class DBPanel:
 class DBCell:
     __table_name__ = "cells"
     id: str
-    owner_id: str | None
+    user_id: str | None
     panel_id: str
     price: float
     cell_index: int
