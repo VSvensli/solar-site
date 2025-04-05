@@ -38,6 +38,7 @@ pnpn dev
 
 ## Todo:
 
+- [ ] Add pagination capabilities to DBInterface
 - [ ] Add faker
 - [ ] Handle expired tokens
 - [ ] Refactore \*.store.ts with unity types
@@ -48,6 +49,8 @@ pnpn dev
 - [ ] Add information about power prices from Entose
 - [ ] Add solar irradiateon from openweatherapi (https://openweathermap.org/api/solar-radiation)
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
+- [ ] Add email validation
 
 - [x] Dockerise
-- [ ] Add testing
+- [x] Add testing
+- [ ] Add more testing
