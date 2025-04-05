@@ -1,4 +1,4 @@
-# Modified example from https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
+# Based on https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
@@ -10,24 +10,14 @@ from pydantic import BaseModel
 
 from backend.constants import DB_NAME
 from backend.db_interface import DBInterface
-from backend.response_types import (
-    UserDataResponse,
-    UserPerformaceDataPointResponse,
-    UserProjectResponse,
-    UserResponse,
-    UserStatisticsResponse,
-)
-from backend.schemas import (
-    DBUser,
-    DBUserProject,
-)
+from backend.response_types import UserResponse
+from backend.schemas import DBUser
 
 SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5"  # Dummy secret key
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 db = DBInterface(db_name=DB_NAME)
-
 router = APIRouter(prefix="/api")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -81,7 +71,7 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -110,72 +100,4 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         raise inactive_exception
     if user is None:
         raise user_not_found_exception
-    return user
-
-
-@router.get("/me")
-async def read_users_me(
-    current_user: Annotated[UserResponse, Depends(get_current_user)],
-) -> UserResponse:
-    return current_user
-
-
-@router.get("/me/data")
-async def read_own_items(
-    current_user: Annotated[UserResponse, Depends(get_current_user)],
-):
-    return draft_user_data_quary(current_user.id)
-
-
-def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPointResponse]:
-    mock_data = [
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 150.0},
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 170.0},
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 210.0},
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 250.0},
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 300.0},
-        {"timestamp": "2025-02-21T08:00:00Z", "value": 380.0},
-    ]
-    user_performance = []
-    for data in mock_data:
-        user_performance.append(UserPerformaceDataPointResponse(**data))
-    return user_performance
-
-
-def draft_user_data_quary(user_id: str) -> UserDataResponse:
-    user_projects = []
-    for user_project in db.query(DBUserProject).filter_by(user_id=user_id).all():
-        user_projects.append(
-            UserProjectResponse(
-                projectId=user_project.project_id,
-                cellIds=[
-                    "1",
-                    "2",
-                    "3",
-                ],  # TODO: make a quary to find which cells are owned by the user
-                percentageOwned=user_project.percentage_owned,
-                timeOfPurchase=user_project.time_of_purchase,
-            )
-        )
-
-    # TODO: make a quary to find/calculate the statistics
-    user_statistics = {
-        "accountBalance": 1000,
-        "cellsOwned": 100,
-        "projectsOwned": 5,
-        "totalInvested": 10010,
-        "totalEarnings": 1010,
-        "totalEnergyGenerated": 10000,
-        "maximumPowerGeneration": 1000,
-    }
-    user_statistics = UserStatisticsResponse(**user_statistics)
-    return UserDataResponse(
-        user=UserResponse(id="1", username="test"),
-        statistics=user_statistics,
-        projects=user_projects,
-        performance=mock_user_performance_quary(user_id),
-    )
-
-
-if __name__ == "__main__":
-    mock_user_performance_quary("s")
+    return UserResponse(id=user.id, username=user.username)
