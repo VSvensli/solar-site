@@ -1,15 +1,14 @@
+from backend.db_interface import DBInterface
 from backend.schemas import (
-    DBUser,
-    DBProject,
-    DBPanel,
     DBCell,
-    DBUserProject,
     DBEnergyDataPoint,
     DBEnergyPrice,
+    DBPanel,
     DBPowerDataPoint,
+    DBProject,
+    DBUser,
+    DBUserProject,
 )
-from backend.db_interface import DBInterface
-
 
 users = [
     DBUser(
@@ -269,8 +268,9 @@ energy_prices = [
 
 
 if __name__ == "__main__":
-    from utils import create_database
     import os
+
+    from utils import create_database
 
     if os.path.exists("solar.db"):
         os.remove("solar.db")

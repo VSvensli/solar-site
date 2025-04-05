@@ -1,15 +1,15 @@
-import sqlite3
 import datetime
-from dataclasses import fields, asdict, astuple
+import sqlite3
+from collections import namedtuple
+from dataclasses import asdict, astuple, fields
 from typing import get_args
 
-
 from backend.constants import DB_NAME
-from collections import namedtuple
 from backend.schemas import DBTypes
 
-
-IntervalSelection = namedtuple("IntervalSelection", ["column", "start_date", "end_date"])
+IntervalSelection = namedtuple(
+    "IntervalSelection", ["column", "start_date", "end_date"]
+)
 
 
 class DBInterface:
@@ -132,10 +132,17 @@ class Query:
                 raise AttributeError(f"{self.model_class.__name__} has no field {key}")
         return self
 
-    def between(self, start_date: datetime.datetime, end_date: datetime.datetime, time_column: str = "date"):
+    def between(
+        self,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        time_column: str = "date",
+    ):
         """Filter the query to include only records between the specified dates."""
         if time_column not in [f.name for f in fields(self.model_class)]:
-            raise AttributeError(f"{self.model_class.__name__} has no field {time_column}")
+            raise AttributeError(
+                f"{self.model_class.__name__} has no field {time_column}"
+            )
 
         str_format = "%Y-%m-%dT%H:%M:%SZ"
         start_date = start_date.strftime(str_format)
@@ -171,6 +178,7 @@ class Query:
 
 if __name__ == "__main__":
     import pprint
+
     from backend.schemas import DBPowerDataPoint
 
     db = DBInterface(db_name=DB_NAME)

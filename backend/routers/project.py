@@ -1,22 +1,23 @@
-from backend.response_types import (
-    ProjectResponse,
-    EnergyDataPointResponse,
-    PowerDataPointResponse,
-    PanelResponse,
-    CellResponse,
-)
-from backend.schemas import DBPowerDataPoint
-from backend.db_interface import DBInterface
+import datetime
+
 from fastapi import APIRouter, HTTPException, status
+
 from backend.constants import DB_NAME
+from backend.db_interface import DBInterface
+from backend.response_types import (
+    CellResponse,
+    EnergyDataPointResponse,
+    PanelResponse,
+    PowerDataPointResponse,
+    ProjectResponse,
+)
 from backend.schemas import (
-    DBProject,
+    DBCell,
     DBEnergyDataPoint,
     DBPanel,
-    DBCell,
     DBPowerDataPoint,
+    DBProject,
 )
-import datetime
 
 router = APIRouter(prefix="/api")
 db = DBInterface(db_name=DB_NAME)
@@ -45,7 +46,9 @@ async def get_projects() -> list[ProjectResponse]:
         )
     if projects:
         return projects
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No projects found.")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND, detail="No projects found."
+    )
 
 
 @router.get("/projects/{project_id}")
@@ -68,14 +71,17 @@ async def get_project(project_id: str) -> ProjectResponse:
             completedDate=project.completed_date,
         )
     raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Project with project_id {project_id} not found."
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Project with project_id {project_id} not found.",
     )
 
 
 @router.get("/projects/{project_id}/energy")
 async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
     data_points = []
-    for data_point in db.quary(DBEnergyDataPoint).filter_by(project_id=project_id).all():
+    for data_point in (
+        db.quary(DBEnergyDataPoint).filter_by(project_id=project_id).all()
+    ):
         data_points.append(
             EnergyDataPointResponse(
                 timestamp=data_point.timestamp,
@@ -85,13 +91,17 @@ async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
     if data_points:
         return data_points
     raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Energy history for project_id {project_id} not found."
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Energy history for project_id {project_id} not found.",
     )
 
 
 # TODO: Move to prossesing.py
 def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
-    return datetime.datetime.strptime(data_point.timestamp, "%Y-%m-%dT%H:%M:%SZ") > datetime.datetime.now()
+    return (
+        datetime.datetime.strptime(data_point.timestamp, "%Y-%m-%dT%H:%M:%SZ")
+        > datetime.datetime.now()
+    )
 
 
 @router.get("/projects/{project_id}/power")
@@ -108,7 +118,8 @@ async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
     if data_points:
         return data_points
     raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail=f"Power history for project_id {project_id} not found."
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Power history for project_id {project_id} not found.",
     )
 
 
@@ -140,4 +151,7 @@ async def get_panels(project_id: str) -> list[PanelResponse]:
         )
     if panels:
         return panels
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Panels for project_id {project_id} not found.")
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=f"Panels for project_id {project_id} not found.",
+    )

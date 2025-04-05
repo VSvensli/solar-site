@@ -1,12 +1,11 @@
+import logging
 import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from fastapi.middleware.cors import CORSMiddleware
-
-from .routers import auth, project
-
-import logging
+from backend.routers import auth, project
 
 logger = logging.getLogger(__name__)
 

@@ -1,29 +1,26 @@
 # Modified example from https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
 from datetime import datetime, timedelta, timezone
-
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+import jwt
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-from fastapi import APIRouter
-from pydantic import BaseModel
 from jwt.exceptions import InvalidTokenError
+from pydantic import BaseModel
+
 from backend.constants import DB_NAME
+from backend.db_interface import DBInterface
+from backend.response_types import (
+    UserDataResponse,
+    UserPerformaceDataPointResponse,
+    UserProjectResponse,
+    UserResponse,
+    UserStatisticsResponse,
+)
 from backend.schemas import (
     DBUser,
     DBUserProject,
 )
-from backend.response_types import (
-    UserStatisticsResponse,
-    UserProjectResponse,
-    UserDataResponse,
-    UserPerformaceDataPointResponse,
-)
-from backend.db_interface import DBInterface
-from backend.response_types import UserResponse
-
-import jwt
 
 SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5"  # Dummy secret key
 ALGORITHM = "HS256"
@@ -80,7 +77,9 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
     return Token(access_token=access_token, token_type="bearer")
 
 
@@ -151,7 +150,11 @@ def draft_user_data_quary(user_id: str) -> UserDataResponse:
         user_projects.append(
             UserProjectResponse(
                 projectId=user_project.project_id,
-                cellIds=["1", "2", "3"],  # TODO: make a quary to find which cells are owned by the user
+                cellIds=[
+                    "1",
+                    "2",
+                    "3",
+                ],  # TODO: make a quary to find which cells are owned by the user
                 percentageOwned=user_project.percentage_owned,
                 timeOfPurchase=user_project.time_of_purchase,
             )
