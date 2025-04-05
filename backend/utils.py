@@ -1,4 +1,11 @@
 import sqlite3
+from functools import reduce
+import operator
+
+
+# https://stackoverflow.com/questions/595374/whats-the-function-like-sum-but-for-multiplication-product
+def multiply_elements(iterable):
+    return reduce(operator.mul, iterable, 1)
 
 
 def create_database():
