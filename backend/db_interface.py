@@ -2,7 +2,7 @@ import datetime
 import sqlite3
 from collections import namedtuple
 from dataclasses import asdict, astuple, fields
-from typing import get_args
+from typing import get_args, Any
 
 from backend.constants import DB_NAME
 from backend.schemas import DBTypes
@@ -151,25 +151,51 @@ class Query:
 
     def select(self, *args):
         """Select specific columns from the query."""
+        if not args:
+            raise ValueError("At least one column must be specified")
         self.selection = ", ".join(args)
         return self
 
-    def all(self) -> list[DBTypes]:
-        """Fetch all results from the query."""
+    def all(self) -> list[DBTypes] | list[Any]:
+        """
+        Retrieves all records from the database based on the constructed query.
+
+        Returns:
+            list[DBTypes] | list[Any]: A list of records fetched from the database.
+            If the selection is "*"(default), the records are returned as instances of the
+            model_class. Otherwise, the raw query results are returned.
+        """
         query, params = self._build_query()
         with sqlite3.connect(self.db_name) as conn:
             cursor = conn.cursor()
             cursor.execute(query, params)
         result = cursor.fetchall()
-        return [self.model_class(*row) for row in result]
+        if result and self.selection == "*":
+            return [self.model_class(*row) for row in result]
+        else:
+            return result
 
-    def one(self) -> DBTypes | None:
+    def one(self) -> DBTypes | Any:
+        """
+        Executes a query to fetch a single record from the database.
+
+        Returns:
+            DBTypes | Any: An instance of the model class if all fields are selected ("*"),
+            otherwise the raw result of the query.
+
+        Raises:
+            sqlite3.Error: If there is an issue with the database connection or query execution.
+        """
         query, params = self._build_query()
         with sqlite3.connect(self.db_name) as conn:
             cursor = conn.cursor()
             cursor.execute(query, params)
         result = cursor.fetchone()
-        return self.model_class(*result)
+
+        if result and self.selection == "*":
+            return self.model_class(*result)
+        else:
+            return result
 
 
 if __name__ == "__main__":
