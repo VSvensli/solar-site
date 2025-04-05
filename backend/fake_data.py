@@ -165,14 +165,14 @@ user_projects = [
         user_id="1",
         project_id="SLG_DE_001",
         percentage_owned=0.1,
-        time_of_purchase="2025-02-21T12:00:00Z",
+        time_of_purchase="2025-02-21T01:00:00Z",
     ),
     DBUserProject(
         id="2",
         user_id="1",
-        project_id="MSP_ES_001",
+        project_id="CSP_FR_001",
         percentage_owned=0.5,
-        time_of_purchase="2025-02-21T12:00:00Z",
+        time_of_purchase="2025-02-21T01:00:00Z",
     ),
 ]
 
@@ -246,22 +246,22 @@ energy_data_points = [
 energy_prices = [
     DBEnergyPrice(
         bidding_zone="FR",
-        timestamp="2025-02-21T08:00:00",
+        timestamp="2025-02-21T08:00:00Z",
         price=50.0,
     ),
     DBEnergyPrice(
         bidding_zone="FR",
-        timestamp="2025-02-21T09:00:00",
+        timestamp="2025-02-21T09:00:00Z",
         price=55.0,
     ),
     DBEnergyPrice(
         bidding_zone="FR",
-        timestamp="2025-02-21T10:00:00",
+        timestamp="2025-02-21T10:00:00Z",
         price=60.0,
     ),
     DBEnergyPrice(
         bidding_zone="FR",
-        timestamp="2025-02-21T11:00:00",
+        timestamp="2025-02-21T11:00:00Z",
         price=65.0,
     ),
 ]
