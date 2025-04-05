@@ -26,7 +26,7 @@ db = DBInterface(db_name=DB_NAME)
 @router.get("/projects")
 async def get_projects() -> list[ProjectResponse]:
     projects = []
-    for project in db.quary(DBProject).all():
+    for project in db.query(DBProject).all():
         projects.append(
             ProjectResponse(
                 projectId=project.id,
@@ -46,14 +46,12 @@ async def get_projects() -> list[ProjectResponse]:
         )
     if projects:
         return projects
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND, detail="No projects found."
-    )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No projects found.")
 
 
 @router.get("/projects/{project_id}")
 async def get_project(project_id: str) -> ProjectResponse:
-    project = db.quary(DBProject).filter_by(id=project_id).one()
+    project = db.query(DBProject).filter_by(id=project_id).one()
     if project:
         return ProjectResponse(
             projectId=project.id,
@@ -79,9 +77,7 @@ async def get_project(project_id: str) -> ProjectResponse:
 @router.get("/projects/{project_id}/energy")
 async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
     data_points = []
-    for data_point in (
-        db.quary(DBEnergyDataPoint).filter_by(project_id=project_id).all()
-    ):
+    for data_point in db.query(DBEnergyDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
             EnergyDataPointResponse(
                 timestamp=data_point.timestamp,
@@ -98,16 +94,13 @@ async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
 
 # TODO: Move to prossesing.py
 def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
-    return (
-        datetime.datetime.strptime(data_point.timestamp, "%Y-%m-%dT%H:%M:%SZ")
-        > datetime.datetime.now()
-    )
+    return datetime.datetime.strptime(data_point.timestamp, "%Y-%m-%dT%H:%M:%SZ") > datetime.datetime.now()
 
 
 @router.get("/projects/{project_id}/power")
 async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
     data_points = []
-    for data_point in db.quary(DBPowerDataPoint).filter_by(project_id=project_id).all():
+    for data_point in db.query(DBPowerDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
             PowerDataPointResponse(
                 timestamp=data_point.timestamp,
@@ -126,9 +119,9 @@ async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
 @router.get("/projects/{project_id}/panels")
 async def get_panels(project_id: str) -> list[PanelResponse]:
     panels = []
-    for panel in db.quary(DBPanel).filter_by(project_id=project_id).all():
+    for panel in db.query(DBPanel).filter_by(project_id=project_id).all():
         cells = []
-        for cell in db.quary(DBCell).filter_by(panel_id=panel.id).all():
+        for cell in db.query(DBCell).filter_by(panel_id=panel.id).all():
             cells.append(
                 CellResponse(
                     cellId=cell.id,

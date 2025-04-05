@@ -7,16 +7,14 @@ from typing import get_args
 from backend.constants import DB_NAME
 from backend.schemas import DBTypes
 
-IntervalSelection = namedtuple(
-    "IntervalSelection", ["column", "start_date", "end_date"]
-)
+IntervalSelection = namedtuple("IntervalSelection", ["column", "start_date", "end_date"])
 
 
 class DBInterface:
     def __init__(self, db_name: str):
         self.db_name = db_name
 
-    def quary(self, model_class: DBTypes) -> "Query":
+    def query(self, model_class: DBTypes) -> "Query":
         return Query(model_class, self.db_name)
 
     def insert(self, data: DBTypes) -> None:
@@ -110,7 +108,7 @@ class Query:
     def _build_query(self):
         """Build the SQL query based on the filters."""
         query = f"SELECT {self.selection} FROM {self.model_class.__table_name__} "
-        if self.filters:
+        if self.filters or self.interval:
             query += "WHERE "
         conditions = []
         params = []
@@ -140,9 +138,7 @@ class Query:
     ):
         """Filter the query to include only records between the specified dates."""
         if time_column not in [f.name for f in fields(self.model_class)]:
-            raise AttributeError(
-                f"{self.model_class.__name__} has no field {time_column}"
-            )
+            raise AttributeError(f"{self.model_class.__name__} has no field {time_column}")
 
         str_format = "%Y-%m-%dT%H:%M:%SZ"
         start_date = start_date.strftime(str_format)
@@ -183,7 +179,7 @@ if __name__ == "__main__":
 
     db = DBInterface(db_name=DB_NAME)
     data = (
-        db.quary(DBPowerDataPoint)
+        db.query(DBPowerDataPoint)
         .filter_by(project_id="CSP_FR_001")
         .between(
             start_date=datetime.datetime(2025, 2, 21, 10),

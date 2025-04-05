@@ -46,7 +46,7 @@ def hash_password(password: str) -> str:
 
 
 def authenticate_user(username: str, password: str) -> UserResponse | bool:
-    user = db.quary(DBUser).filter_by(username=username).one()
+    user = db.query(DBUser).filter_by(username=username).one()
     if not user:
         return False
     if not verify_password(password, user.password):
@@ -77,9 +77,7 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
     return Token(access_token=access_token, token_type="bearer")
 
 
@@ -107,7 +105,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     except InvalidTokenError:
         raise credentials_exception
 
-    user = db.quary(DBUser).filter_by(username=username).one()
+    user = db.query(DBUser).filter_by(username=username).one()
     if user.disabled:
         raise inactive_exception
     if user is None:
@@ -146,7 +144,7 @@ def mock_user_performance_quary(user_id: str) -> list[UserPerformaceDataPointRes
 
 def draft_user_data_quary(user_id: str) -> UserDataResponse:
     user_projects = []
-    for user_project in db.quary(DBUserProject).filter_by(user_id=user_id).all():
+    for user_project in db.query(DBUserProject).filter_by(user_id=user_id).all():
         user_projects.append(
             UserProjectResponse(
                 projectId=user_project.project_id,
