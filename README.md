@@ -38,6 +38,7 @@ pnpn dev
 
 ## Todo:
 
+- [ ] Remove projects owned and cells owned from schema (replace with query)
 - [ ] Add pagination capabilities to DBInterface
 - [ ] Add faker
 - [ ] Handle expired tokens
