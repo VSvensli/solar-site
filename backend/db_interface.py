@@ -2,10 +2,11 @@ import datetime
 import sqlite3
 from collections import namedtuple
 from dataclasses import asdict, astuple, fields
-from typing import get_args, Any
+from typing import get_args, Any, Annotated
+from fastapi import Depends
 
-from backend.constants import DB_NAME
 from backend.schemas import DBTypes
+from backend.constants import DB_NAME
 
 IntervalSelection = namedtuple("IntervalSelection", ["column", "start_date", "end_date"])
 
@@ -20,6 +21,13 @@ class DBInterface:
     def insert(self, data: DBTypes) -> None:
         inserter = DBInserter(self.db_name)
         inserter.insert(data)
+
+
+def get_db_interface():
+    return DBInterface(db_name=DB_NAME)
+
+
+DefaultDB = Annotated[DBInterface, Depends(get_db_interface)]
 
 
 class DBInserter:
@@ -196,23 +204,3 @@ class Query:
             return self.model_class(*result)
         else:
             return result
-
-
-if __name__ == "__main__":
-    import pprint
-
-    from backend.schemas import DBPowerDataPoint
-
-    db = DBInterface(db_name=DB_NAME)
-    data = (
-        db.query(DBPowerDataPoint)
-        .filter_by(project_id="CSP_FR_001")
-        .between(
-            start_date=datetime.datetime(2025, 2, 21, 10),
-            end_date=datetime.datetime(2025, 2, 21, 11),
-            time_column="timestamp",
-        )
-        .all()
-    )
-
-    pprint.pprint(data)

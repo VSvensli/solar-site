@@ -2,8 +2,7 @@ import datetime
 
 from fastapi import APIRouter, HTTPException, status
 
-from backend.constants import DB_NAME
-from backend.db_interface import DBInterface
+from backend.db_interface import DefaultDB
 from backend.response_types import (
     CellResponse,
     EnergyDataPointResponse,
@@ -20,11 +19,10 @@ from backend.schemas import (
 )
 
 router = APIRouter(prefix="/api")
-db = DBInterface(db_name=DB_NAME)
 
 
 @router.get("/projects")
-async def get_projects() -> list[ProjectResponse]:
+async def get_projects(db: DefaultDB) -> list[ProjectResponse]:
     projects = []
     for project in db.query(DBProject).all():
         projects.append(
@@ -50,7 +48,7 @@ async def get_projects() -> list[ProjectResponse]:
 
 
 @router.get("/projects/{project_id}")
-async def get_project(project_id: str) -> ProjectResponse:
+async def get_project(project_id: str, db: DefaultDB) -> ProjectResponse:
     project = db.query(DBProject).filter_by(id=project_id).one()
     if project:
         return ProjectResponse(
@@ -75,7 +73,7 @@ async def get_project(project_id: str) -> ProjectResponse:
 
 
 @router.get("/projects/{project_id}/energy")
-async def get_energy_data(project_id: str) -> list[EnergyDataPointResponse]:
+async def get_energy_data(project_id: str, db: DefaultDB) -> list[EnergyDataPointResponse]:
     data_points = []
     for data_point in db.query(DBEnergyDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
@@ -97,7 +95,7 @@ def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
 
 
 @router.get("/projects/{project_id}/power")
-async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
+async def get_power_data(project_id: str, db: DefaultDB) -> list[PowerDataPointResponse]:
     data_points = []
     for data_point in db.query(DBPowerDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
@@ -116,7 +114,7 @@ async def get_power_data(project_id: str) -> list[PowerDataPointResponse]:
 
 
 @router.get("/projects/{project_id}/panels")
-async def get_panels(project_id: str) -> list[PanelResponse]:
+async def get_panels(project_id: str, db: DefaultDB) -> list[PanelResponse]:
     panels = []
     for panel in db.query(DBPanel).filter_by(project_id=project_id).all():
         cells = []

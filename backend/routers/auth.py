@@ -8,8 +8,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from pydantic import BaseModel
 
-from backend.constants import DB_NAME
-from backend.db_interface import DBInterface
+from backend.db_interface import DBInterface, DefaultDB
 from backend.response_types import UserResponse
 from backend.schemas import DBUser
 
@@ -17,7 +16,6 @@ SECRET_KEY = "16b1187d79999da9425a3f3f844b015ec4a6816b5e4c75bef8edaa168c8ad4c5" 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-db = DBInterface(db_name=DB_NAME)
 router = APIRouter(prefix="/api")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 
@@ -37,7 +35,7 @@ def hash_password(password: str) -> str:
     return "supersecret!" + password
 
 
-def authenticate_user(username: str, password: str) -> UserResponse | bool:
+def authenticate_user(username: str, password: str, db: DBInterface) -> UserResponse | bool:
     user = db.query(DBUser).filter_by(username=username).one()
     if not user:
         return False
@@ -58,10 +56,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 
 @router.post("/token")
-async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> Token:
-    user = authenticate_user(form_data.username, form_data.password)
+async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: DefaultDB) -> Token:
+    user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -73,7 +69,7 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
-async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)]) -> UserResponse:
+async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)], db: DefaultDB) -> UserResponse:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

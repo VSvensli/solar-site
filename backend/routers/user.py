@@ -10,24 +10,24 @@ from backend.response_types import (
     UserPerformaceDataPointResponse,
 )
 from backend.routers.auth import get_user_from_token, hash_password
-from backend.db_interface import DBInterface
-from backend.schemas import DBUser, DBUserProject, DBCell
-from backend.constants import DB_NAME
+from backend.db_interface import DefaultDB, DBInterface
+from backend.schemas import DBUser, DBUserProject
 from backend.utils import multiply_elements
 import uuid
 
 router = APIRouter(prefix="/api")
-db = DBInterface(db_name=DB_NAME)
+
+CurrentUser = Annotated[UserResponse, Depends(get_user_from_token)]
 
 
-def user_exists(username: str) -> bool:
+def user_exists(username: str, db: DefaultDB) -> bool:
     """Check if a user exists in the database."""
     user = db.query(DBUser).filter_by(username=username).one()
     return user is not None
 
 
 @router.get("/users")
-async def read_users() -> list[UserResponse]:
+async def read_users(db: DefaultDB) -> list[UserResponse]:
     users = db.query(DBUser).all()
     return [
         UserResponse(
@@ -44,7 +44,7 @@ class UserCreationRequest(BaseModel):
 
 
 @router.post("/users")
-async def create_user(form_data: UserCreationRequest) -> UserResponse:
+async def create_user(form_data: UserCreationRequest, db: DefaultDB) -> UserResponse:
     if user_exists(form_data.username):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     new_user = DBUser(
@@ -64,7 +64,7 @@ async def create_user(form_data: UserCreationRequest) -> UserResponse:
 
 
 @router.get("/users/{user_id}")
-async def read_user(user_id: str) -> UserResponse:
+async def read_user(user_id: str, db: DefaultDB) -> UserResponse:
     user = db.query(DBUser).filter_by(id=user_id).one()
     return UserResponse(
         id=user.id,
@@ -73,16 +73,12 @@ async def read_user(user_id: str) -> UserResponse:
 
 
 @router.get("/me")
-async def read_users_me(
-    user: Annotated[UserResponse, Depends(get_user_from_token)],
-) -> UserResponse:
+async def read_users_me(user: CurrentUser) -> UserResponse:
     return user
 
 
 @router.get("/me/data")
-async def read_own_items(
-    user: Annotated[UserResponse, Depends(get_user_from_token)],
-) -> UserDataResponse:
+async def read_own_items(user: CurrentUser, db: DefaultDB) -> UserDataResponse:
     user_data = db.query(DBUser).filter_by(id=user.id).one()
     user_projetcts = db.query(DBUserProject).filter_by(user_id=user.id).all()
 
@@ -97,7 +93,7 @@ async def read_own_items(
     )
     projects = []
     for user_projetct in user_projetcts:
-        cell_ids = fetch_owned_cells_ids(user.id, user_projetct.project_id)
+        cell_ids = fetch_owned_cells_ids(user_id=user.id, project_id=user_projetct.project_id, db=db)
         projects.append(
             UserProjectResponse(
                 projectId=user_projetct.project_id,
@@ -107,7 +103,7 @@ async def read_own_items(
             )
         )
 
-    performance = fetch_user_performace(user.id)
+    performance = fetch_user_performace(user_id=user.id, db=db)
 
     return UserDataResponse(
         user=user,
@@ -117,7 +113,7 @@ async def read_own_items(
     )
 
 
-def fetch_owned_cells_ids(user_id: str, project_id: str) -> list[str]:
+def fetch_owned_cells_ids(user_id: str, project_id: str, db: DBInterface) -> list[str]:
     """Fetches the IDs of cells owned by a user in a specific project.
     Args:
         user_id (str): The ID of the user.
@@ -140,7 +136,7 @@ def fetch_owned_cells_ids(user_id: str, project_id: str) -> list[str]:
     return [cell[0] for cell in results]
 
 
-def fetch_user_performace(user_id: str) -> list[UserPerformaceDataPointResponse]:
+def fetch_user_performace(user_id: str, db: DBInterface) -> list[UserPerformaceDataPointResponse]:
     """Fetches the performance data points for a given user based on their project ownership.
     Args:
         user_id (str): The ID of the user.
@@ -187,7 +183,3 @@ def fetch_user_performace(user_id: str) -> list[UserPerformaceDataPointResponse]
             )
         )
     return data_points
-
-
-if __name__ == "__main__":
-    fetch_user_performace(1)
