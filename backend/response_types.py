@@ -59,12 +59,12 @@ class PowerPriceDataPointResponse(BaseModel):
 
 class EnergyDataPointResponse(BaseModel):
     timestamp: str
-    production: int
+    production: float
 
 
 class PowerDataPointResponse(BaseModel):
     timestamp: str
-    production: int
+    production: float
     isPredicted: bool
 
 

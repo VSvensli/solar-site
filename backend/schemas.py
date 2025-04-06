@@ -30,6 +30,7 @@ class DBProject:
     bidding_zone: str = ""
     installed_capacity: str = ""
     description: str = ""
+    plant_efficiency: float = 0.0
     number_of_cells: int = 0
     unit_price: float = 0.0
     completed_date: str | None = None

@@ -41,6 +41,7 @@ def create_database():
         bidding_zone TEXT NOT NULL,
         installed_capacity TEXT,
         description TEXT,
+        plant_efficiency REAL,
         number_of_cells INTEGER,
         unit_price REAL,
         completed_date TEXT NULL,
