@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue(), vueDevTools()],
   server: {
     proxy: {
-      "/api": "http://localhost:3000",
+      "/api": "http://localhost:8000",
     },
   },
   resolve: {

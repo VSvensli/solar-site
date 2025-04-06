@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useUserStore } from "@/stores/user.store";
-import Chart from "primevue/chart";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "vue-chartjs";
+
+ChartJS.register(CategoryScale, LineElement, PointElement, LinearScale, Title, Tooltip, Legend);
 
 const userStore = useUserStore();
 
@@ -24,8 +36,8 @@ const chartOptions = {
   scales: {
     y: {
       ticks: {
-        callback: function (value: number) {
-          return "$ " + value;
+        callback: function (tickValue: string | number) {
+          return "$ " + tickValue;
         },
       },
     },
@@ -47,6 +59,6 @@ const chartData = computed(() => {
 <template>
   <div>
     <h2 class="text-2xl/7 font-semibold text-gray-700 p-3">Historic performance</h2>
-    <Chart type="line" :data="chartData" :options="chartOptions" />
+    <Line :data="chartData" :options="chartOptions" />
   </div>
 </template>

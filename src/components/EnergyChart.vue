@@ -3,8 +3,11 @@
 import { onMounted, computed } from "vue";
 import { useProjectStore } from "@/stores/project.store";
 import { storeToRefs } from "pinia";
-import Chart from "primevue/chart";
 import { formatEnergy } from "@/utils";
+import { Bar } from "vue-chartjs";
+import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+
+Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const props = defineProps<{ projectId: string | null }>();
 
@@ -20,17 +23,13 @@ onMounted(() => {
 });
 
 const chartOptions = {
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-
+  responsive: true,
+  maintainAspectRatio: false,
   scales: {
     y: {
       ticks: {
-        callback: function (value: number) {
-          return formatEnergy(value);
+        callback: function (tickValue: string | number) {
+          return formatEnergy(Number(tickValue));
         },
       },
     },
@@ -54,13 +53,8 @@ const chartData = computed(() => ({
 <template>
   <div>
     <h2 class="text-2xl/7 font-semibold text-gray-700 p-3">Energy production history</h2>
-
-    <!-- <p v-if="status.fetchEnergyData.value === 'loading'">Loading...</p>
-    <p v-if="status.fetchEnergyData.value === 'error'">
-      {{ errorMsg.fetchEnergyData.value }}
-    </p> -->
-    <div>
-      <Chart type="bar" :data="chartData" :options="chartOptions" />
+    <div style="width: 100%; height: 400px">
+      <Bar :chart-id="'bar-chart'" :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>

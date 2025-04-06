@@ -6,8 +6,8 @@ import UserAccountPerformance from "@/components/UserAccountPerformance.vue";
 import { useUserStore } from "@/stores/user.store";
 const userStore = useUserStore();
 
-onMounted(() => {
-  userStore.fetchUserData();
+onMounted(async () => {
+  await userStore.fetchUserData();
 });
 </script>
 
