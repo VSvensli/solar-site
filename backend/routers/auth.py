@@ -19,7 +19,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 db = DBInterface(db_name=DB_NAME)
 router = APIRouter(prefix="/api")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 
 
 class Token(BaseModel):
@@ -98,7 +98,7 @@ async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)]) -> 
         raise credentials_exception
 
     user = db.query(DBUser).filter_by(username=username).one()
-    if user.disabled:
+    if not user.is_active:
         raise inactive_exception
     if user is None:
         raise user_not_found_exception
