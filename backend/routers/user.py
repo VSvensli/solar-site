@@ -11,7 +11,7 @@ from backend.response_types import (
 )
 from backend.routers.auth import get_user_from_token, hash_password
 from backend.db_interface import DBInterface
-from backend.schemas import DBUser, DBUserProject
+from backend.schemas import DBUser, DBUserProject, DBCell
 from backend.constants import DB_NAME
 from backend.utils import multiply_elements
 import uuid
@@ -95,17 +95,18 @@ async def read_own_items(
         totalEnergyGenerated=user_data.total_energy_generated,
         maximumPowerGeneration=user_data.maximum_power_generation,
     )
-    projects = (
-        [
+    projects = []
+    for user_projetct in user_projetcts:
+        cell_ids = fetch_owned_cells_ids(user.id, user_projetct.project_id)
+        projects.append(
             UserProjectResponse(
-                projectId=project.id,
-                cellIds=project.cell_ids,
-                percentageOwned=project.percentage_owned,
-                timeOfPurchase=project.time_of_purchase,
+                projectId=user_projetct.project_id,
+                cellIds=cell_ids,
+                percentageOwned=user_projetct.percentage_owned,
+                timeOfPurchase=user_projetct.time_of_purchase,
             )
-            for project in user_projetcts
-        ],
-    )
+        )
+
     performance = fetch_user_performace(user.id)
 
     return UserDataResponse(
@@ -114,6 +115,29 @@ async def read_own_items(
         projects=projects,
         performance=performance,
     )
+
+
+def fetch_owned_cells_ids(user_id: str, project_id: str) -> list[str]:
+    """Fetches the IDs of cells owned by a user in a specific project.
+    Args:
+        user_id (str): The ID of the user.
+        project_id (str): The ID of the project.
+    Returns:
+        list[str]: A list of cell IDs owned by the user in the specified project."""
+    with sqlite3.connect(db.db_name) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT cells.id
+            FROM cells
+            JOIN panels ON cells.panel_id = panels.id
+            JOIN projects ON panels.project_id = projects.id
+            WHERE cells.user_id = ? AND projects.id = ?;
+            """,
+            (user_id, project_id),
+        )
+        results = cursor.fetchall()
+    return [cell[0] for cell in results]
 
 
 def fetch_user_performace(user_id: str) -> list[UserPerformaceDataPointResponse]:
