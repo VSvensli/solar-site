@@ -48,7 +48,7 @@ pnpn dev
 - [x] Add user creation
 - [x] Add sqlite instead of using dicts to mock the database
 - [ ] Finish checkout page and add post request for cell purchase
-- [ ] Add information about power prices from Entose
+- [x] Add information about power prices from Entose (Temporary Energy-Charts)
 - [x] Add solar irradiateon from openweatherapi (https://openweathermap.org/api/solar-radiation)
 - [ ] Replace panel selector with canvas, Pixi.js, or eqvivalent in order create a more user friendly interface for selecting cells.
 - [ ] Add email validation

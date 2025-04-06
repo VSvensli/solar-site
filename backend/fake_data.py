@@ -1,4 +1,7 @@
 from backend.db_interface import DBInterface
+import datetime
+from backend.services.irredation import backfill_irridation_data
+from backend.services.energy_price import backfill_energy_price
 from backend.schemas import (
     DBCell,
     DBEnergyDataPoint,
@@ -44,6 +47,7 @@ projects = [
             "It significantly contributes to France’s renewable energy targets and supplies clean power to tens of thousands "
             "of households."
         ),
+        plant_efficiency=0.19,
         number_of_cells=1000000,  # Estimated based on typical panel capacity
         unit_price=2.50,  # Assumed unit price per cell in EUR
         completed_date="2015-01-01",
@@ -56,7 +60,7 @@ projects = [
         location_country="Spain",
         latitude=38.046,
         longitude=-1.493,
-        bidding_zone="ES",
+        bidding_zone="HU",  # Teleported from Spain to Hungary since ES is not available,
         installed_capacity="60 MW",
         description=(
             "Situated in the sunny Murcia region, the Mula Solar Power Plant harnesses the area’s high solar irradiance to "
@@ -64,6 +68,7 @@ projects = [
             "photovoltaic technology over a sprawling open area. Commissioned in the mid-2010s, it plays an important role "
             "in Spain’s drive toward sustainable energy production and reducing carbon emissions."
         ),
+        plant_efficiency=0.15,
         number_of_cells=200000,
         unit_price=2.30,
         completed_date="2016-01-01",
@@ -76,7 +81,7 @@ projects = [
         location_country="Germany",
         latitude=51.983,
         longitude=14.308,
-        bidding_zone="DE",
+        bidding_zone="DE-LU",
         installed_capacity="70 MW",
         description=(
             "Located in Brandenburg near the town of Lieberose, Solarpark Lieberose is a pioneering photovoltaic installation "
@@ -84,6 +89,7 @@ projects = [
             "demonstrating solar energy’s viability in northern European climates. Its expansive array of solar panels contributes "
             "clean energy to Germany’s grid and supports the nation’s renewable portfolio."
         ),
+        plant_efficiency=0.18,
         number_of_cells=233333,
         unit_price=2.40,
         completed_date="2011-01-01",
@@ -283,6 +289,16 @@ if __name__ == "__main__":
     db.insert(panels)
     db.insert(cells)
     db.insert(user_projects)
-    db.insert(energy_prices)
-    db.insert(power_data_points)
-    db.insert(energy_data_points)
+
+    # db.insert(energy_prices)
+    # db.insert(energy_data_points)
+    # db.insert(power_data_points)
+    backfill_irridation_data(
+        from_date=datetime.datetime.now() - datetime.timedelta(days=10),
+        to_date=datetime.datetime.now() + datetime.timedelta(days=1),
+    )
+
+    backfill_energy_price(
+        from_date=datetime.datetime.now() - datetime.timedelta(days=10),
+        to_date=datetime.datetime.now() - datetime.timedelta(days=3),
+    )
