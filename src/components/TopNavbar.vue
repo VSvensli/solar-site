@@ -14,8 +14,12 @@ function handleLogout() {
 <template>
   <div class="flex justify-between items-center w-full p-4 px-10 border-b-2 border-gray-200 font-mono font-semibold">
     <div class="flex space-x-4">
-      <div @click="router.push({ name: 'Home' })" class="hover:text-gray-400">Home</div>
-      <div v-if="authStore.isAuthenticated" @click="router.push({ name: 'UserDashboard' })" class="hover:text-gray-400">
+      <div @click="router.push({ name: 'Home' })" class="hover:text-gray-400 cursor-pointer">Home</div>
+      <div
+        v-if="authStore.isAuthenticated"
+        @click="router.push({ name: 'UserDashboard' })"
+        class="hover:text-gray-400 cursor-pointer"
+      >
         Dashboard
       </div>
     </div>
@@ -30,11 +34,13 @@ function handleLogout() {
       <div
         v-if="!authStore.isAuthenticated"
         @click="router.push({ name: 'CreateAccount' })"
-        class="hover:text-gray-400"
+        class="hover:text-gray-400 cursor-pointer"
       >
         Signup
       </div>
-      <div v-if="authStore.isAuthenticated" @click="handleLogout" class="hover:text-gray-400">Logout</div>
+      <div v-if="authStore.isAuthenticated" @click="handleLogout" class="hover:text-gray-400 cursor-pointer">
+        Logout
+      </div>
     </div>
   </div>
 </template>

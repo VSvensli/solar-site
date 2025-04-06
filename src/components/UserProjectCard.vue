@@ -21,7 +21,7 @@ const project = computed(() => projectStore.findProjectById(props.userProject.pr
   <div v-if="project">
     <div class="flex gap-3">
       <p
-        class="text-2xl/7 font-bold text-gray-900 hover:underline"
+        class="text-2xl/7 font-bold text-gray-900 hover:underline cursor-pointer"
         @click="router.push({ path: `/projects/${project.projectId}` })"
       >
         {{ project.name }}

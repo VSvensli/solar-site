@@ -32,30 +32,32 @@ export const useUserStore = defineStore("user", () => {
     projects: [],
   });
 
-  const fetchUserData = async () => {
+  function fetchUserData() {
     status.fetchUserData.value = "loading";
     errorMsg.fetchUserData.value = null;
-    try {
-      const response = await fetch(`${window.location.origin}/api/users/me/data`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${useAuthStore().userToken}`,
-        },
+    console.log("Fetching user data...");
+    fetch("/api/me/data", {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${useAuthStore().userToken}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        userData.value = data;
+        status.fetchUserData.value = "success";
+      })
+      .catch((err) => {
+        errorMsg.fetchUserData.value = (err as Error).message;
+        status.fetchUserData.value = "error";
       });
-      if (!response.ok) throw new Error("Failed to fetch user data");
-      const data = await response.json();
-
-      userData.value = data as UserData;
-
-      console.log(userData.value);
-
-      status.fetchUserData.value = "success";
-    } catch (err) {
-      errorMsg.fetchUserData.value = (err as Error).message;
-      status.fetchUserData.value = "error";
-    }
-  };
+  }
 
   async function postCellPurchaseRequest() {
     fetch("not implemented", {
