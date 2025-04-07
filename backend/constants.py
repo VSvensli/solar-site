@@ -1,1 +1,1 @@
-DB_NAME = "/Users/vegard/github/solar-site/solar.db"
+DB_NAME = "../solar.db"
