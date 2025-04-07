@@ -14,6 +14,7 @@ from backend.db_interface import DefaultDB, DBInterface
 from backend.schemas import DBUser, DBUserProject
 from backend.utils import multiply_elements
 import uuid
+import datetime
 
 router = APIRouter(prefix="/api")
 
@@ -154,12 +155,9 @@ def fetch_user_performace(user_id: str, db: DBInterface) -> list[UserPerformaceD
                 
             FROM 
                 user_projects
-            JOIN 
-                projects ON user_projects.project_id = projects.id
-            JOIN 
-                energy_data ON energy_data.project_id = projects.id
-            JOIN 
-                energy_price 
+            JOIN projects ON user_projects.project_id = projects.id
+            JOIN energy_data ON energy_data.project_id = projects.id
+            JOIN energy_price 
                     ON energy_price.timestamp = energy_data.timestamp 
                     AND energy_price.bidding_zone = projects.bidding_zone
             WHERE 
@@ -172,14 +170,17 @@ def fetch_user_performace(user_id: str, db: DBInterface) -> list[UserPerformaceD
 
         results = cursor.fetchall()
 
+    results = sorted(results, key=lambda x: x[0])
     data_points = []
+    cumulative_value = 0
     for result in results:
         timestamp, *values = result
         value = multiply_elements(values)
+        cumulative_value += value
         data_points.append(
             UserPerformaceDataPointResponse(
                 timestamp=timestamp,
-                value=value,
+                value=cumulative_value,
             )
         )
     return data_points
