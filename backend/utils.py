@@ -1,6 +1,7 @@
 import sqlite3
 from functools import reduce
 import operator
+from backend.constants import DB_NAME
 
 
 # https://stackoverflow.com/questions/595374/whats-the-function-like-sum-but-for-multiplication-product
@@ -9,7 +10,7 @@ def multiply_elements(iterable):
 
 
 def create_database():
-    connection = sqlite3.connect("solar.db")
+    connection = sqlite3.connect(DB_NAME)
     cursor = connection.cursor()
 
     # Users Table
