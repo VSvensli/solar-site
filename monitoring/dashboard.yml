@@ -1,0 +1,16 @@
+{
+  "id": null,
+  "title": "My Python App",
+  "panels":
+    [
+      {
+        "type": "graph",
+        "title": "Request Latency",
+        "targets": [{ "expr": "request_latency_seconds", "format": "time_series" }],
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 9 },
+      },
+    ],
+  "schemaVersion": 16,
+  "version": 1,
+  "overwrite": true,
+}
