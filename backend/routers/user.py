@@ -14,14 +14,13 @@ from backend.db_interface import DefaultDB, DBInterface
 from backend.schemas import DBUser, DBUserProject
 from backend.utils import multiply_elements
 import uuid
-import datetime
 
 router = APIRouter(prefix="/api")
 
 CurrentUser = Annotated[UserResponse, Depends(get_user_from_token)]
 
 
-def user_exists(username: str, db: DefaultDB) -> bool:
+def user_exists(username: str, db: DBInterface) -> bool:
     """Check if a user exists in the database."""
     user = db.query(DBUser).filter_by(username=username).one()
     return user is not None
@@ -46,7 +45,7 @@ class UserCreationRequest(BaseModel):
 
 @router.post("/users")
 async def create_user(form_data: UserCreationRequest, db: DefaultDB) -> UserResponse:
-    if user_exists(form_data.username):
+    if user_exists(form_data.username, db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     new_user = DBUser(
         id=uuid.uuid4().hex,

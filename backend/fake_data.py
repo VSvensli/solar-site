@@ -170,7 +170,7 @@ user_projects = [
         id="1",
         user_id="1",
         project_id="SLG_DE_001",
-        percentage_owned=0.1,
+        percentage_owned=0.01,
         time_of_purchase="2025-02-21T01:00:00Z",
     ),
     DBUserProject(
@@ -275,14 +275,14 @@ energy_prices = [
 
 if __name__ == "__main__":
     import os
-
     from utils import create_database
+    from backend.constants import DB_NAME
 
-    if os.path.exists("solar.db"):
-        os.remove("solar.db")
+    if os.path.exists(DB_NAME):
+        os.remove(DB_NAME)
     create_database()
 
-    db = DBInterface(db_name="solar.db")
+    db = DBInterface(db_name=DB_NAME)
 
     db.insert(users)
     db.insert(projects)
@@ -300,5 +300,5 @@ if __name__ == "__main__":
 
     backfill_energy_price(
         from_date=datetime.datetime.now() - datetime.timedelta(days=10),
-        to_date=datetime.datetime.now() - datetime.timedelta(days=3),
+        to_date=datetime.datetime.now() - datetime.timedelta(days=4),
     )
