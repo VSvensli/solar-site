@@ -12,6 +12,8 @@ IntervalSelection = namedtuple("IntervalSelection", ["column", "start_date", "en
 
 
 class DBInterface:
+    """Interface for interacting with the database."""
+
     def __init__(self, db_name: str):
         self.db_name = db_name
 
@@ -24,6 +26,7 @@ class DBInterface:
 
 
 def get_db_interface():
+    """Dependency to get the database interface."""
     return DBInterface(db_name=DB_NAME)
 
 
@@ -31,6 +34,8 @@ DefaultDB = Annotated[DBInterface, Depends(get_db_interface)]
 
 
 class DBInserter:
+    """Interface for inserting data into the database."""
+
     def __init__(self, db_name):
         self.db_name = db_name
 
@@ -106,6 +111,8 @@ class DBInserter:
 
 
 class Query:
+    """Interface for querying the database."""
+
     def __init__(self, model_class: DBTypes, db_name: str = ""):
         self.model_class = model_class
         self.selection = "*"

@@ -119,7 +119,6 @@ def solar_irradiance_profile(
 
         if sin_elevation > 0:
             # Air mass approximation (simplified, avoids divide-by-zero)
-            elevation_deg = math.degrees(math.asin(sin_elevation))
             air_mass = 1 / max(0.1, sin_elevation)
 
             # Clear-sky irradiance estimate (simplified model)
@@ -179,11 +178,9 @@ def fake_openweather_irradiance_api(request: OpenWeatherIrradianceRequest) -> Op
     )
 
 
-db = DBInterface(db_name=DB_NAME)
-
-
 def store_irridation_data(time: datetime = datetime.now()):
     # This function should be implemented to store irradiance data
+    db = DBInterface(db_name=DB_NAME)
     projects = db.query(DBProject).all()
 
     for project in projects:

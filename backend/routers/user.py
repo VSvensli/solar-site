@@ -28,6 +28,7 @@ def user_exists(username: str, db: DBInterface) -> bool:
 
 @router.get("/users")
 async def read_users(db: DefaultDB) -> list[UserResponse]:
+    """Fetch all users from the database."""
     users = db.query(DBUser).all()
     return [
         UserResponse(
@@ -45,6 +46,7 @@ class UserCreationRequest(BaseModel):
 
 @router.post("/users")
 async def create_user(form_data: UserCreationRequest, db: DefaultDB) -> UserResponse:
+    """Create a new user in the database."""
     if user_exists(form_data.username, db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
     new_user = DBUser(
@@ -65,6 +67,7 @@ async def create_user(form_data: UserCreationRequest, db: DefaultDB) -> UserResp
 
 @router.get("/users/{user_id}")
 async def read_user(user_id: str, db: DefaultDB) -> UserResponse:
+    """Fetch a user by their ID."""
     user = db.query(DBUser).filter_by(id=user_id).one()
     return UserResponse(
         id=user.id,
@@ -74,11 +77,13 @@ async def read_user(user_id: str, db: DefaultDB) -> UserResponse:
 
 @router.get("/me")
 async def read_users_me(user: CurrentUser) -> UserResponse:
+    """Fetch the current user's information."""
     return user
 
 
 @router.get("/me/data")
 async def read_own_items(user: CurrentUser, db: DefaultDB) -> UserDataResponse:
+    """Fetch the current user's data, including statistics and projects."""
     user_data = db.query(DBUser).filter_by(id=user.id).one()
     user_projetcts = db.query(DBUserProject).filter_by(user_id=user.id).all()
 

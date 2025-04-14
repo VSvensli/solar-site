@@ -27,6 +27,8 @@ class Token(BaseModel):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     # Simulate a delay for hashing
+
+    # Note add secrets.compare_digest for timing attack protection
     return hashed_password.partition("!")[-1] == plain_password
 
 
@@ -36,6 +38,7 @@ def hash_password(password: str) -> str:
 
 
 def authenticate_user(username: str, password: str, db: DBInterface) -> UserResponse | bool:
+    """Authenticate a user by checking the username and password."""
     user = db.query(DBUser).filter_by(username=username).one()
     if not user:
         return False
@@ -45,6 +48,7 @@ def authenticate_user(username: str, password: str, db: DBInterface) -> UserResp
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Create a JWT access token."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -57,6 +61,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 @router.post("/token")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: DefaultDB) -> Token:
+    """Login and return an access token."""
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
@@ -70,6 +75,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 
 async def get_user_from_token(token: Annotated[str, Depends(oauth2_scheme)], db: DefaultDB) -> UserResponse:
+    """Get the current user from the token."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

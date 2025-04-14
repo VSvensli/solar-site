@@ -23,6 +23,7 @@ router = APIRouter(prefix="/api")
 
 @router.get("/projects")
 async def get_projects(db: DefaultDB) -> list[ProjectResponse]:
+    """Fetch all projects from the database."""
     projects = []
     for project in db.query(DBProject).all():
         projects.append(
@@ -49,6 +50,7 @@ async def get_projects(db: DefaultDB) -> list[ProjectResponse]:
 
 @router.get("/projects/{project_id}")
 async def get_project(project_id: str, db: DefaultDB) -> ProjectResponse:
+    """Fetch a specific project by its ID from the database."""
     project = db.query(DBProject).filter_by(id=project_id).one()
     if project:
         return ProjectResponse(
@@ -74,6 +76,7 @@ async def get_project(project_id: str, db: DefaultDB) -> ProjectResponse:
 
 @router.get("/projects/{project_id}/energy")
 async def get_energy_data(project_id: str, db: DefaultDB) -> list[EnergyDataPointResponse]:
+    """Fetch energy data points for a specific project."""
     data_points = []
     for data_point in db.query(DBEnergyDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
@@ -96,6 +99,7 @@ def is_data_point_predicted(data_point: DBPowerDataPoint) -> bool:
 
 @router.get("/projects/{project_id}/power")
 async def get_power_data(project_id: str, db: DefaultDB) -> list[PowerDataPointResponse]:
+    """Fetch power data points for a specific project."""
     data_points = []
     for data_point in db.query(DBPowerDataPoint).filter_by(project_id=project_id).all():
         data_points.append(
@@ -115,6 +119,7 @@ async def get_power_data(project_id: str, db: DefaultDB) -> list[PowerDataPointR
 
 @router.get("/projects/{project_id}/panels")
 async def get_panels(project_id: str, db: DefaultDB) -> list[PanelResponse]:
+    """Fetch panels for a specific project."""
     panels = []
     for panel in db.query(DBPanel).filter_by(project_id=project_id).all():
         cells = []
