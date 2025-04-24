@@ -4,10 +4,7 @@ from backend.services.irredation import backfill_irridation_data
 from backend.services.energy_price import backfill_energy_price
 from backend.schemas import (
     DBCell,
-    DBEnergyDataPoint,
-    DBEnergyPrice,
     DBPanel,
-    DBPowerDataPoint,
     DBProject,
     DBUser,
     DBUserProject,
@@ -182,96 +179,6 @@ user_projects = [
     ),
 ]
 
-power_data_points = [
-    DBPowerDataPoint(
-        id="1",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T08:00:00Z",
-        value=150.0,
-    ),
-    DBPowerDataPoint(
-        id="2",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T09:00:00Z",
-        value=175.0,
-    ),
-    DBPowerDataPoint(
-        id="3",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T10:00:00Z",
-        value=200.0,
-    ),
-    DBPowerDataPoint(
-        id="4",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T11:00:00Z",
-        value=180.0,
-    ),
-    DBPowerDataPoint(
-        id="5",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T12:00:00Z",
-        value=210.0,
-    ),
-]
-
-energy_data_points = [
-    DBEnergyDataPoint(
-        id="1",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T08:00:00Z",
-        value=150.0,
-    ),
-    DBEnergyDataPoint(
-        id="2",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T09:00:00Z",
-        value=175.0,
-    ),
-    DBEnergyDataPoint(
-        id="3",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T10:00:00Z",
-        value=200.0,
-    ),
-    DBEnergyDataPoint(
-        id="4",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T11:00:00Z",
-        value=180.0,
-    ),
-    DBEnergyDataPoint(
-        id="5",
-        project_id="CSP_FR_001",
-        timestamp="2025-02-21T12:00:00Z",
-        value=210.0,
-    ),
-]
-
-
-energy_prices = [
-    DBEnergyPrice(
-        bidding_zone="FR",
-        timestamp="2025-02-21T08:00:00Z",
-        price=50.0,
-    ),
-    DBEnergyPrice(
-        bidding_zone="FR",
-        timestamp="2025-02-21T09:00:00Z",
-        price=55.0,
-    ),
-    DBEnergyPrice(
-        bidding_zone="FR",
-        timestamp="2025-02-21T10:00:00Z",
-        price=60.0,
-    ),
-    DBEnergyPrice(
-        bidding_zone="FR",
-        timestamp="2025-02-21T11:00:00Z",
-        price=65.0,
-    ),
-]
-
 
 if __name__ == "__main__":
     import os
@@ -290,9 +197,6 @@ if __name__ == "__main__":
     db.insert(cells)
     db.insert(user_projects)
 
-    # db.insert(energy_prices)
-    # db.insert(energy_data_points)
-    # db.insert(power_data_points)
     backfill_irridation_data(
         from_date=datetime.datetime.now() - datetime.timedelta(days=10),
         to_date=datetime.datetime.now() + datetime.timedelta(days=1),
